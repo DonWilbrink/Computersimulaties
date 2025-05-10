@@ -8,6 +8,7 @@ object frmMain: TfrmMain
   ClientWidth = 958
   DesignTimePPI = 120
   Menu = Hoofdminu
+  OnCreate = FormCreate
   object pbMain: TPaintBox
     Left = 32
     Height = 600
@@ -16,9 +17,44 @@ object frmMain: TfrmMain
     Color = clBlack
     ParentColor = False
   end
+  object Panel1: TPanel
+    Left = 649
+    Height = 696
+    Top = 0
+    Width = 309
+    Align = alRight
+    Caption = 'Panel1'
+    ClientHeight = 696
+    ClientWidth = 309
+    TabOrder = 0
+    object lblInvoer: TLabel
+      Left = 30
+      Height = 20
+      Top = 21
+      Width = 58
+      Caption = 'lblInvoer'
+    end
+    object edtInvoer: TEdit
+      Left = 30
+      Height = 28
+      Top = 55
+      Width = 164
+      NumbersOnly = True
+      TabOrder = 0
+      Text = '12345'
+    end
+    object memUitvoer: TMemo
+      Left = 30
+      Height = 320
+      Top = 128
+      Width = 236
+      Color = clWhite
+      TabOrder = 1
+    end
+  end
   object Hoofdminu: TMainMenu
-    Left = 59
-    Top = 43
+    Left = 768
+    Top = 496
     object mniHoofdstukken: TMenuItem
       Caption = 'Hoofdstukken'
       object mniHoofdstuk1: TMenuItem
@@ -26,6 +62,14 @@ object frmMain: TfrmMain
         object mniPythkleed: TMenuItem
           Caption = 'Pythagoraskleed'
           OnClick = mniPythkleedClick
+        end
+        object mniPriem: TMenuItem
+          Caption = 'Factorisatie getal < 2147483648'
+          OnClick = mniPriemClick
+        end
+        object mniGauss: TMenuItem
+          Caption = 'Priemgetallenkleedje van Gauss'
+          OnClick = mniGaussClick
         end
       end
       object mniHoofdstuk2: TMenuItem
