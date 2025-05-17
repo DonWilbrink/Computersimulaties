@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, ExtCtrls,
-  StdCtrls, Windows;
+  StdCtrls, Spin, Windows;
 
 type
 
@@ -14,9 +14,14 @@ type
 
   TfrmMain = class(TForm)
     edtInvoer: TEdit;
+    seParameter2: TFloatSpinEdit;
+    GroupBox1: TGroupBox;
     Hoofdminu: TMainMenu;
+    lblParameter1: TLabel;
+    lblParameter2: TLabel;
     lblInvoer: TLabel;
     memUitvoer: TMemo;
+    mniLissa1: TMenuItem;
     mniGauss: TMenuItem;
     mniPriem: TMenuItem;
     mniHoofdstuk2: TMenuItem;
@@ -25,8 +30,11 @@ type
     mniHoofdstukken: TMenuItem;
     Panel1: TPanel;
     pbMain: TPaintBox;
+    seParameter1: TSpinEdit;
     procedure FormCreate(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure mniGaussClick(Sender: TObject);
+    procedure mniLissa1Click(Sender: TObject);
     procedure mniPriemClick(Sender: TObject);
     procedure mniPythkleedClick(Sender: TObject);
   private
@@ -39,6 +47,7 @@ var
   frmMain: TfrmMain;
   prog, xOff, yOff: Integer;
   xFac, yFac: Double;
+  flag: Boolean;
   EgaColor : array[0..15] of TColor =
     (TColor($000000),TColor($AA0000),TColor($00AA00),TColor($AAAA00),
      TColor($0000AA),TColor($AA00AA),TColor($0055AA),TColor($AAAAAA),
@@ -92,16 +101,16 @@ end;
 
 procedure TfrmMain.mniPriemClick(Sender: TObject);
 var
-  T1, T2, FProc: Int64;
-  f, j, n : Integer;
+  n, T1, T2, FProc: Int64;
+  f, j: Integer;
 begin
   prog := 2;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Factorisatie getal < 2147483648';
+  frmMain.Caption := 'Computer simulaties: Factorisatie getal < 9223372036854775807';
   Panel1.Visible := True;
   QueryPerformanceFrequency(Fproc);     // Get processor frequency
-  lblInvoer.Caption := 'Geef getal < 2147483648';
-  n := StrToInt(edtInvoer.Text);
+  lblInvoer.Caption := 'Geef getal < 9223372036854775807';
+  n := StrToInt64(edtInvoer.Text);
   j := 1;
   memUitvoer.Clear;
   QueryPerformanceCounter(T1);          // Start
@@ -188,9 +197,56 @@ begin
   end;
 end;
 
+procedure TfrmMain.mniLissa1Click(Sender: TObject);
+var
+  a, i, s: Integer;
+  f, h, t, x, y: Double;
+begin
+  prog := 4;
+  pbClear;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  xFac := pbMain.Width / 2;
+  yFac := pbMain.Height / 2;
+  Panel1.Visible := True;
+  GroupBox1.Visible := True;
+  lblParameter1.Caption := 'Frequentieverhouding';
+  seParameter1.Visible := True;
+  seParameter1.Increment := 1;
+  seParameter1.MinValue := 1;
+  seParameter1.MaxValue := 10;
+  lblParameter2.Visible := True;
+  lblParameter2.Caption := 'Faseverschuiving tussen 0 en 1';
+  seParameter2.Visible := True;
+  seParameter2.Increment := 0.01;
+  seParameter2.MinValue := 0.01;
+  seParameter2.MaxValue := 1.00;
+  flag := False;
+  s := seParameter1.Value;
+  f := seParameter2.Value;
+  a := 1; // amplitude
+  f := 2 * pi * f;
+  t := 0;
+  h := 0.01; // initialisatie
+  for i := 1 to 20000 do
+  begin
+    //Application.ProcessMessages;
+    x := a * Cos(s * t);
+    y := Cos(t * f);
+    pbMain.Canvas.Pixels[Round(xOff+xFac*x),Round(yOff+yFac*y)] := clYellow;
+    t := t + h;
+  end;
+end;
+
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   pbClear;
+end;
+
+procedure TfrmMain.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  flag := Key = VK_ESCAPE;
 end;
 
 procedure TfrmMain.pbClear;
@@ -199,10 +255,17 @@ begin
   begin
     Clear;
     Brush.Color := clBlack;
-    Pen.Color := clYellow;
-    Panel1.Visible := False;
-  end;
+    FillRect(0,0,Width,Height);
 
+    Pen.Color := clYellow;
+
+  end;
+  Panel1.Visible := False;
+  //GroupBox1.Visible := False;
+  //lblParameter1.Visible := False;
+  //lblParameter2.Visible := False;
+  //seParameter1.Visible := False;
+ // seParameter2.Visible := False;
 end;
 
 end.

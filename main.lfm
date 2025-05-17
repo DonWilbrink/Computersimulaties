@@ -9,6 +9,7 @@ object frmMain: TfrmMain
   DesignTimePPI = 120
   Menu = Hoofdminu
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   object pbMain: TPaintBox
     Left = 32
     Height = 600
@@ -51,10 +52,49 @@ object frmMain: TfrmMain
       Color = clWhite
       TabOrder = 1
     end
+    object GroupBox1: TGroupBox
+      Left = 32
+      Height = 176
+      Top = 464
+      Width = 231
+      Caption = 'Parameters'
+      ClientHeight = 151
+      ClientWidth = 227
+      TabOrder = 2
+      object lblParameter1: TLabel
+        Left = 10
+        Height = 20
+        Top = 10
+        Width = 92
+        Caption = 'lblParameter1'
+      end
+      object lblParameter2: TLabel
+        Left = 10
+        Height = 20
+        Top = 80
+        Width = 92
+        Caption = 'lblParameter2'
+      end
+      object seParameter1: TSpinEdit
+        Left = 10
+        Height = 28
+        Top = 40
+        Width = 63
+        TabOrder = 0
+        Value = 1
+      end
+      object seParameter2: TFloatSpinEdit
+        Left = 10
+        Height = 28
+        Top = 112
+        Width = 78
+        TabOrder = 1
+      end
+    end
   end
   object Hoofdminu: TMainMenu
-    Left = 768
-    Top = 496
+    Left = 488
+    Top = 520
     object mniHoofdstukken: TMenuItem
       Caption = 'Hoofdstukken'
       object mniHoofdstuk1: TMenuItem
@@ -74,6 +114,10 @@ object frmMain: TfrmMain
       end
       object mniHoofdstuk2: TMenuItem
         Caption = 'Hoofdstuk 2'
+        object mniLissa1: TMenuItem
+          Caption = 'Lissajous krommen'
+          OnClick = mniLissa1Click
+        end
       end
     end
   end
