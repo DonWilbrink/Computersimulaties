@@ -233,6 +233,7 @@ var
 begin
   prog := 4;
   pbClear;
+  frmMain.Caption := 'Computer simulaties: Lissajous krommen';
   xOff := pbMain.Width div 2;
   yOff := pbMain.Height div 2;
   xFac := pbMain.Width / 3;
@@ -263,7 +264,11 @@ begin
     //Application.ProcessMessages;
     x := a * Cos(s * t);
     y := Cos(t * f);
-    pbMain.Canvas.Pixels[Round(xOff+xFac*x),Round(yOff+yFac*y)] := clYellow;
+    if t = 0 then
+      pbMain.Canvas.MoveTo(Round(xOff+xFac*x),Round(yOff+yFac*y))
+    else
+      pbMain.Canvas.LineTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
+    //pbMain.Canvas.Pixels[Round(xOff+xFac*x),Round(yOff+yFac*y)] := clYellow;
     t := t + h;
   end;
 end;
@@ -275,6 +280,7 @@ var
 begin
   prog := 5;
   pbClear;
+  frmMain.Caption := 'Computer simulaties: Figuur van Lissajous';
   xOff := pbMain.Width div 2;
   yOff := pbMain.Height div 2;
   xFac := pbMain.Width / 4;
@@ -339,9 +345,7 @@ begin
     Clear;
     Brush.Color := clBlack;
     FillRect(0,0,Width,Height);
-
     Pen.Color := clYellow;
-
   end;
   Panel1.Visible := False;
   //GroupBox1.Visible := False;
