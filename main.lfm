@@ -82,6 +82,7 @@ object frmMain: TfrmMain
         Width = 63
         TabOrder = 0
         Value = 1
+        OnChange = seParameter1Change
       end
       object seParameter2: TFloatSpinEdit
         Left = 10
@@ -89,6 +90,16 @@ object frmMain: TfrmMain
         Top = 112
         Width = 78
         TabOrder = 1
+        OnChange = seParameter2Change
+      end
+      object seParameter3: TSpinEdit
+        Left = 96
+        Height = 28
+        Top = 40
+        Width = 63
+        TabOrder = 2
+        Value = 1
+        OnChange = seParameter3Change
       end
     end
   end
@@ -117,6 +128,10 @@ object frmMain: TfrmMain
         object mniLissa1: TMenuItem
           Caption = 'Lissajous krommen'
           OnClick = mniLissa1Click
+        end
+        object mniLissa2: TMenuItem
+          Caption = 'Figuur van Lissajous'
+          OnClick = mniLissa2Click
         end
       end
     end

@@ -14,6 +14,7 @@ type
 
   TfrmMain = class(TForm)
     edtInvoer: TEdit;
+    mniLissa2: TMenuItem;
     seParameter2: TFloatSpinEdit;
     GroupBox1: TGroupBox;
     Hoofdminu: TMainMenu;
@@ -31,12 +32,17 @@ type
     Panel1: TPanel;
     pbMain: TPaintBox;
     seParameter1: TSpinEdit;
+    seParameter3: TSpinEdit;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure mniGaussClick(Sender: TObject);
     procedure mniLissa1Click(Sender: TObject);
+    procedure mniLissa2Click(Sender: TObject);
     procedure mniPriemClick(Sender: TObject);
     procedure mniPythkleedClick(Sender: TObject);
+    procedure seParameter1Change(Sender: TObject);
+    procedure seParameter2Change(Sender: TObject);
+    procedure seParameter3Change(Sender: TObject);
   private
     procedure pbClear;
   public
@@ -96,6 +102,29 @@ begin
         Inc(n);
       end;
     end;
+  end;
+end;
+
+procedure TfrmMain.seParameter1Change(Sender: TObject);
+begin
+  case prog of
+  4: mniLissa1Click(Sender);
+  5: mniLissa2Click(Sender);
+  end;
+end;
+
+procedure TfrmMain.seParameter2Change(Sender: TObject);
+begin
+  case prog of
+  4: mniLissa1Click(Sender);
+  5: mniLissa2Click(Sender);
+  end;
+end;
+
+procedure TfrmMain.seParameter3Change(Sender: TObject);
+begin
+  case prog of
+  5: mniLissa2Click(Sender);
   end;
 end;
 
@@ -206,8 +235,8 @@ begin
   pbClear;
   xOff := pbMain.Width div 2;
   yOff := pbMain.Height div 2;
-  xFac := pbMain.Width / 2;
-  yFac := pbMain.Height / 2;
+  xFac := pbMain.Width / 3;
+  yFac := pbMain.Height / 3;
   Panel1.Visible := True;
   GroupBox1.Visible := True;
   lblParameter1.Caption := 'Frequentieverhouding';
@@ -228,13 +257,67 @@ begin
   f := 2 * pi * f;
   t := 0;
   h := 0.01; // initialisatie
-  for i := 1 to 20000 do
+  //for i := 1 to 20000 do
+  while t < 2*Pi do
   begin
     //Application.ProcessMessages;
     x := a * Cos(s * t);
     y := Cos(t * f);
     pbMain.Canvas.Pixels[Round(xOff+xFac*x),Round(yOff+yFac*y)] := clYellow;
     t := t + h;
+  end;
+end;
+
+procedure TfrmMain.mniLissa2Click(Sender: TObject);
+var
+  Ampl1, Ampl2, Fase, Freq, h, t, x, y: Double;
+  k, m, n: Integer;
+begin
+  prog := 5;
+  pbClear;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  xFac := pbMain.Width / 4;
+  yFac := pbMain.Height / 4;
+  Panel1.Visible := True;
+  GroupBox1.Visible := True;
+  lblParameter1.Caption := 'Frequentieverhouding';
+  seParameter1.Visible := True;
+  seParameter1.Increment := 1;
+  seParameter1.MinValue := 1;
+  seParameter1.MaxValue := 100;
+  lblParameter2.Visible := True;
+  lblParameter2.Caption := 'Faseverschuiving tussen 0 en 1';
+  seParameter2.Visible := True;
+  seParameter2.Increment := 0.01;
+  seParameter2.MinValue := 0;
+  seParameter2.MaxValue := 1.00;
+  seParameter3.Visible := True;
+  seParameter3.Increment := 1;
+  seParameter3.MinValue := 1;
+  seParameter3.MaxValue := 100;
+  h := Pi / 100;
+  Ampl1 := 1.6;
+  Ampl2 := 1.2;
+  m := seParameter1.Value;
+  n := seParameter3.Value;
+  //m := 8;
+  //n := 13;
+  Fase := seParameter2.Value;
+  Freq := m / n;
+  Fase := Fase * 2 * Pi;
+  With pbMain.Canvas do
+  begin
+    Rectangle(Round(xOff+xFac*-1.1*Ampl1),Round(yOff+yFac*-1.1*Ampl2),
+      Round(xOff+xFac*1.1*Ampl1),Round(yOff+yFac*1.1*Ampl2));
+    MoveTo(Round(xOff+xFac*0),Round(yOff+yFac*Ampl2*Cos(Fase)));
+    for k := 0 to 200*n do
+    begin
+      t := k * h;
+      x := Ampl1 * Sin(Freq*t);
+      y := Ampl2 * Cos(t+Fase);
+      LineTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
+    end;
   end;
 end;
 
