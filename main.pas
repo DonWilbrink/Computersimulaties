@@ -14,6 +14,8 @@ type
 
   TfrmMain = class(TForm)
     edtInvoer: TEdit;
+    mniLissaf: TMenuItem;
+    mniLissa3: TMenuItem;
     mniLissa2: TMenuItem;
     seParameter2: TFloatSpinEdit;
     GroupBox1: TGroupBox;
@@ -38,6 +40,8 @@ type
     procedure mniGaussClick(Sender: TObject);
     procedure mniLissa1Click(Sender: TObject);
     procedure mniLissa2Click(Sender: TObject);
+    procedure mniLissa3Click(Sender: TObject);
+    procedure mniLissafClick(Sender: TObject);
     procedure mniPriemClick(Sender: TObject);
     procedure mniPythkleedClick(Sender: TObject);
     procedure seParameter1Change(Sender: TObject);
@@ -323,6 +327,75 @@ begin
       x := Ampl1 * Sin(Freq*t);
       y := Ampl2 * Cos(t+Fase);
       LineTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
+    end;
+  end;
+end;
+
+procedure TfrmMain.mniLissa3Click(Sender: TObject);
+var
+  a: Integer;
+  b, h, s, t, x, y: Double;
+begin
+  prog := 6;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: Lissajousachtige krommen';
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  xFac := pbMain.Width / 4;
+  yFac := pbMain.Height / 4;
+  a := 1;
+  b := 0.5;
+  s := 2.45; //parameters
+  t := 0;
+  h := 0.01; //initialisatie
+  with pbMain.Canvas do
+  begin
+    Rectangle(Round(xOff+xFac*(-a-b-0.1)),Round(yOff+yFac*-1.1),
+       Round(xOff+xFac*(a+b+0.1)),Round(yOff+yFac*1.1));
+    while t < 50*Pi do
+    begin
+      x := a*Cos(t)+b*Cos(s*t);
+      y := Sin(t);
+      if t = 0 then
+        MoveTo(Round(xOff+xFac*x),Round(yOff+yFac*y))
+      else
+        LineTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
+      t := t + h;
+    end;
+  end;
+end;
+
+procedure TfrmMain.mniLissafClick(Sender: TObject);
+var
+  s1, s2: Integer;
+  a1, a2, h, phi, r, t, x, y: Double;
+begin
+  prog := 7;
+  pbClear;
+  frmMain.Caption :=  'Computer simulaties: Lissajousachtige kromme in de vorm van een bloem';
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  xFac := pbMain.Width / 5.5;
+  yFac := pbMain.Height / 5.5;
+  t := 0;
+  h := 0.01;
+  a1 := 1.5;
+  a2 := 0.2; //te varieren parameters
+  s1 := 6;
+  s2 := 36; //parameters
+  with pbMain.Canvas do
+  begin
+    while t < 2 * pi do
+    begin
+      r := 1 + a1 * Cos(s1 * t) + a2 * Cos(s2 * t);
+      phi := t;
+      x := r * Cos(phi);
+      y := r * Sin(phi);
+      if t = 0 then
+        MoveTo(Round(xOff+xFac*x),Round(yOff+yFac*y))
+      else
+        LineTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
+      t := t + h;
     end;
   end;
 end;

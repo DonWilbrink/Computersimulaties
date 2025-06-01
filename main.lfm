@@ -133,6 +133,14 @@ object frmMain: TfrmMain
           Caption = 'Figuur van Lissajous'
           OnClick = mniLissa2Click
         end
+        object mniLissa3: TMenuItem
+          Caption = 'Lissajousachtige krommen'
+          OnClick = mniLissa3Click
+        end
+        object mniLissaf: TMenuItem
+          Caption = 'Lissajousachtige kromme in de vorm van een bloem'
+          OnClick = mniLissafClick
+        end
       end
     end
   end
