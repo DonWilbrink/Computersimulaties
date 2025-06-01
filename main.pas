@@ -6,24 +6,21 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, ExtCtrls,
-  StdCtrls, Spin, Windows;
+  StdCtrls, Spin, priem, Windows;
 
 type
 
   { TfrmMain }
 
   TfrmMain = class(TForm)
-    edtInvoer: TEdit;
+    seParameter4: TFloatSpinEdit;
+    GroupBox1: TGroupBox;
+    lblParameter1: TLabel;
+    lblParameter2: TLabel;
     mniLissaf: TMenuItem;
     mniLissa3: TMenuItem;
     mniLissa2: TMenuItem;
-    seParameter2: TFloatSpinEdit;
-    GroupBox1: TGroupBox;
     Hoofdminu: TMainMenu;
-    lblParameter1: TLabel;
-    lblParameter2: TLabel;
-    lblInvoer: TLabel;
-    memUitvoer: TMemo;
     mniLissa1: TMenuItem;
     mniGauss: TMenuItem;
     mniPriem: TMenuItem;
@@ -34,6 +31,7 @@ type
     Panel1: TPanel;
     pbMain: TPaintBox;
     seParameter1: TSpinEdit;
+    seParameter2: TFloatSpinEdit;
     seParameter3: TSpinEdit;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -47,6 +45,7 @@ type
     procedure seParameter1Change(Sender: TObject);
     procedure seParameter2Change(Sender: TObject);
     procedure seParameter3Change(Sender: TObject);
+    procedure seParameter4Change(Sender: TObject);
   private
     procedure pbClear;
   public
@@ -112,8 +111,18 @@ end;
 procedure TfrmMain.seParameter1Change(Sender: TObject);
 begin
   case prog of
-  4: mniLissa1Click(Sender);
-  5: mniLissa2Click(Sender);
+  4:
+    begin
+      mniLissa1Click(Sender);
+    end;
+  5:
+    begin
+      mniLissa2Click(Sender);
+    end;
+  6:
+    begin
+      mniLissa3Click(Sender);
+    end;
   end;
 end;
 
@@ -122,6 +131,8 @@ begin
   case prog of
   4: mniLissa1Click(Sender);
   5: mniLissa2Click(Sender);
+  6: mniLissa3Click(Sender);
+  7: mniLissafClick(Sender);
   end;
 end;
 
@@ -132,51 +143,18 @@ begin
   end;
 end;
 
+procedure TfrmMain.seParameter4Change(Sender: TObject);
+begin
+  case prog of
+  7: mniLissafClick(Sender);
+  end;
+end;
+
 procedure TfrmMain.mniPriemClick(Sender: TObject);
-var
-  n, T1, T2, FProc: Int64;
-  f, j: Integer;
 begin
   prog := 2;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Factorisatie getal < 9223372036854775807';
-  Panel1.Visible := True;
-  QueryPerformanceFrequency(Fproc);     // Get processor frequency
-  lblInvoer.Caption := 'Geef getal < 9223372036854775807';
-  n := StrToInt64(edtInvoer.Text);
-  j := 1;
-  memUitvoer.Clear;
-  QueryPerformanceCounter(T1);          // Start
-  While n mod 2 = 0 do
-  begin
-    memUitvoer.Lines.Add(j.ToString + '  2');
-    Inc(j);
-    n := n div 2;
-  end;
-  f := 3;
-  while n mod 3 = 0 do
-  begin
-    memUitvoer.Lines.Add(j.ToString + '  3');
-    Inc(j);
-    n := n div 3;
-  end;
-  while f < Sqrt(n) do
-  begin
-    Inc(f,2);
-    while n mod f = 0 do
-    begin
-      memUitvoer.Lines.Add(j.ToString + '  ' + f.ToString);
-      Inc(j);
-      n := n div f;
-    end;
-  end;
-  QueryPerformanceCounter(T2);
-  if n > 1 then
-  begin
-    memUitvoer.Lines.Add(j.ToString + '  ' + n.ToString);
-    memUitvoer.Lines.Add('');
-    memUitvoer.Lines.Add('Het factoriseren duurde: ' + (1000*(T2-T1)/FProc).ToString + ' milliseconden');
-  end;
+  frmPriem.ShowModal;
 end;
 
 procedure TfrmMain.mniGaussClick(Sender: TObject);
@@ -232,7 +210,7 @@ end;
 
 procedure TfrmMain.mniLissa1Click(Sender: TObject);
 var
-  a, i, s: Integer;
+  a, s: Integer;
   f, h, t, x, y: Double;
 begin
   prog := 4;
@@ -244,6 +222,7 @@ begin
   yFac := pbMain.Height / 3;
   Panel1.Visible := True;
   GroupBox1.Visible := True;
+  lblParameter1.Visible := True;
   lblParameter1.Caption := 'Frequentieverhouding';
   seParameter1.Visible := True;
   seParameter1.Increment := 1;
@@ -339,12 +318,26 @@ begin
   prog := 6;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Lissajousachtige krommen';
+  Panel1.Visible := True;
+  GroupBox1.Visible := True;
+  lblParameter1.Visible := True;
+  lblParameter1.Caption := 'a';
+  seParameter1.Visible := True;
+  seParameter1.Increment := 1;
+  seParameter1.MinValue := 1;
+  seParameter1.MaxValue := 10;
+  lblParameter2.Visible := True;
+  lblParameter2.Caption := 'b';
+  seParameter2.Visible := True;
+  seParameter2.Increment := 0.1;
+  seParameter2.MinValue := 0;
+  seParameter2.MaxValue := 10.00;
   xOff := pbMain.Width div 2;
   yOff := pbMain.Height div 2;
   xFac := pbMain.Width / 4;
   yFac := pbMain.Height / 4;
-  a := 1;
-  b := 0.5;
+  a := seParameter1.Value;
+  b := seParameter2.Value;
   s := 2.45; //parameters
   t := 0;
   h := 0.01; //initialisatie
@@ -373,14 +366,27 @@ begin
   prog := 7;
   pbClear;
   frmMain.Caption :=  'Computer simulaties: Lissajousachtige kromme in de vorm van een bloem';
+  Panel1.Visible := True;
+  GroupBox1.Visible := True;
+
+  lblParameter2.Visible := True;
+  lblParameter2.Caption := 'a1 en a2';
+  seParameter2.Visible := True;
+  seParameter2.Increment := 0.1;
+  seParameter2.MinValue := 0.1;
+  seParameter2.MaxValue := 10;
+  seParameter4.Visible := True;
+  seParameter4.Increment := 0.1;
+  seParameter4.MinValue := 0.1;
+  seParameter4.MaxValue := 5;
   xOff := pbMain.Width div 2;
   yOff := pbMain.Height div 2;
   xFac := pbMain.Width / 5.5;
   yFac := pbMain.Height / 5.5;
   t := 0;
   h := 0.01;
-  a1 := 1.5;
-  a2 := 0.2; //te varieren parameters
+  a1 := seParameter2.Value;
+  a2 := seParameter4.Value; //te varieren parameters
   s1 := 6;
   s2 := 36; //parameters
   with pbMain.Canvas do
@@ -421,11 +427,13 @@ begin
     Pen.Color := clYellow;
   end;
   Panel1.Visible := False;
-  //GroupBox1.Visible := False;
-  //lblParameter1.Visible := False;
-  //lblParameter2.Visible := False;
-  //seParameter1.Visible := False;
- // seParameter2.Visible := False;
+  GroupBox1.Visible := False;
+  lblParameter1.Visible := False;
+  lblParameter2.Visible := False;
+  seParameter1.Visible := False;
+  seParameter2.Visible := False;
+  seParameter3.Visible := False;
+  seParameter4.Visible := False;
 end;
 
 end.

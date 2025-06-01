@@ -15,6 +15,7 @@ object frmMain: TfrmMain
     Height = 600
     Top = 40
     Width = 600
+    Anchors = [akTop, akLeft, akRight, akBottom]
     Color = clBlack
     ParentColor = False
   end
@@ -24,43 +25,18 @@ object frmMain: TfrmMain
     Top = 0
     Width = 309
     Align = alRight
-    Caption = 'Panel1'
     ClientHeight = 696
     ClientWidth = 309
     TabOrder = 0
-    object lblInvoer: TLabel
-      Left = 30
-      Height = 20
-      Top = 21
-      Width = 58
-      Caption = 'lblInvoer'
-    end
-    object edtInvoer: TEdit
-      Left = 30
-      Height = 28
-      Top = 55
-      Width = 164
-      NumbersOnly = True
-      TabOrder = 0
-      Text = '12345'
-    end
-    object memUitvoer: TMemo
-      Left = 30
-      Height = 320
-      Top = 128
-      Width = 236
-      Color = clWhite
-      TabOrder = 1
-    end
     object GroupBox1: TGroupBox
-      Left = 32
-      Height = 176
-      Top = 464
+      Left = 16
+      Height = 416
+      Top = 48
       Width = 231
       Caption = 'Parameters'
-      ClientHeight = 151
+      ClientHeight = 391
       ClientWidth = 227
-      TabOrder = 2
+      TabOrder = 0
       object lblParameter1: TLabel
         Left = 10
         Height = 20
@@ -100,6 +76,14 @@ object frmMain: TfrmMain
         TabOrder = 2
         Value = 1
         OnChange = seParameter3Change
+      end
+      object seParameter4: TFloatSpinEdit
+        Left = 96
+        Height = 28
+        Top = 112
+        Width = 63
+        TabOrder = 3
+        OnChange = seParameter4Change
       end
     end
   end

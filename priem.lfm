@@ -1,0 +1,44 @@
+object frmPriem: TfrmPriem
+  Left = 353
+  Height = 484
+  Top = 32
+  Width = 381
+  BorderStyle = bsDialog
+  Caption = 'Priem'
+  ClientHeight = 484
+  ClientWidth = 381
+  DesignTimePPI = 120
+  Position = poScreenCenter
+  OnCreate = FormCreate
+  object lblInvoer: TLabel
+    Left = 24
+    Height = 20
+    Top = 24
+    Width = 58
+    Caption = 'lblInvoer'
+  end
+  object edtInvoer: TEdit
+    Left = 24
+    Height = 28
+    Top = 64
+    Width = 320
+    TabOrder = 0
+    Text = '12345'
+  end
+  object memUitvoer: TMemo
+    Left = 24
+    Height = 281
+    Top = 184
+    Width = 320
+    TabOrder = 1
+  end
+  object btnBereken: TButton
+    Left = 24
+    Height = 31
+    Top = 120
+    Width = 94
+    Caption = 'Bereken'
+    TabOrder = 2
+    OnClick = btnBerekenClick
+  end
+end
