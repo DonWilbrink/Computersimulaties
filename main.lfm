@@ -126,6 +126,17 @@ object frmMain: TfrmMain
           OnClick = mniLissafClick
         end
       end
+      object mniHoofdstuk3: TMenuItem
+        Caption = 'Hoofdstuk 3'
+        object mniHoogte1: TMenuItem
+          Caption = 'Hoogte 1'
+          OnClick = mniHoogte1Click
+        end
+        object mniHoogte2: TMenuItem
+          Caption = 'Hoogte 2'
+          OnClick = mniHoogte2Click
+        end
+      end
     end
   end
 end

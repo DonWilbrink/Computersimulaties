@@ -45,6 +45,7 @@
         <Filename Value="priem.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmPriem"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit>
     </Units>

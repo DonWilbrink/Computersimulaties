@@ -6,13 +6,16 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, ExtCtrls,
-  StdCtrls, Spin, priem, Windows;
+  StdCtrls, Spin, priem, Windows, Math;
 
 type
 
   { TfrmMain }
 
   TfrmMain = class(TForm)
+    mniHoogte2: TMenuItem;
+    mniHoogte1: TMenuItem;
+    mniHoofdstuk3: TMenuItem;
     seParameter4: TFloatSpinEdit;
     GroupBox1: TGroupBox;
     lblParameter1: TLabel;
@@ -36,6 +39,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure mniGaussClick(Sender: TObject);
+    procedure mniHoogte1Click(Sender: TObject);
+    procedure mniHoogte2Click(Sender: TObject);
     procedure mniLissa1Click(Sender: TObject);
     procedure mniLissa2Click(Sender: TObject);
     procedure mniLissa3Click(Sender: TObject);
@@ -93,14 +98,22 @@ begin
         y := 2*m*n;
         if (x < max) and (y < max) then
         begin
-          Pixels[xm+x,ym-y] := clYellow;
+          {Pixels[xm+x,ym-y] := clYellow;
           Pixels[xm+x,ym+y] := clYellow;
           Pixels[xm-x,ym-y] := clYellow;
           Pixels[xm-x,ym+y] := clYellow;
           Pixels[xm+y,ym-x] := clYellow;
           Pixels[xm+y,ym+x] := clYellow;
           Pixels[xm-y,ym-x] := clYellow;
-          Pixels[xm-y,ym+x] := clYellow;
+          Pixels[xm-y,ym+x] := clYellow;}
+          EllipseC(xm+x,ym-y,2,2);
+          EllipseC(xm+x,ym+y,2,2);
+          EllipseC(xm-x,ym-y,2,2);
+          EllipseC(xm-x,ym+y,2,2);
+          EllipseC(xm+y,ym-x,2,2);
+          EllipseC(xm+y,ym+x,2,2);
+          EllipseC(xm-y,ym-x,2,2);
+          EllipseC(xm-y,ym+x,2,2);
         end;
         Inc(n);
       end;
@@ -203,6 +216,65 @@ begin
         EllipseC(Round(xOff+xFac*n1),Round(yOff+yFac*-n2),3,3);
         EllipseC(Round(xOff+xFac*n2),Round(yOff+yFac*-n1),3,3);
         nextpoint:
+      end;
+    end;
+  end;
+end;
+
+procedure TfrmMain.mniHoogte1Click(Sender: TObject);
+var
+  i, j, m, n, xm, ym: Integer;
+  x, y, z: Double;
+begin
+  prog := 8;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: Hoogte 1';
+  xm := pbMain.Width div 2;
+  ym := pbMain.Height div 2;
+  n := xm;
+  m := 12; // aantal niveau's
+  with pbmain.Canvas do
+  begin
+    //Rectangle(160, 80, 480, 400);
+    for i := -n to n do
+    begin
+      for j := -n to n do
+      begin
+        x := i / n;
+        y := j / n;
+        z := x * x - y * y; // oppervlak
+        if Floor(m * z) mod 2 = 0 then
+          Pixels[xm + i, ym - j] := clYellow;
+      end;
+    end;
+  end;
+end;
+
+procedure TfrmMain.mniHoogte2Click(Sender: TObject);
+var
+  i, j, l, m, n, xm, ym: Integer;
+  x, y, z: Double;
+begin
+  prog := 9;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: Hoogte 2';
+  xm := pbMain.Width div 2;
+  ym := pbMain.Height div 2;
+  n := xm;
+  m := 12; // aantal niveau's
+  with pbmain.Canvas do
+  begin
+    //Rectangle(160, 80, 480, 400);
+    for i := -n to n do
+    begin
+      for j := -n to n do
+      begin
+        x := i / n;
+        y := j / n;
+        z := x * x - y * y; // oppervlak
+        l := 1 + Floor(m * (1 + z)) mod 10;
+//        if Round(m * z) mod 2 = 0 then
+        Pixels[xm + i, ym - j] := EgaColor[l];
       end;
     end;
   end;
