@@ -13,6 +13,7 @@ type
   { TfrmMain }
 
   TfrmMain = class(TForm)
+    mniLevel: TMenuItem;
     mniHoogte2: TMenuItem;
     mniHoogte1: TMenuItem;
     mniHoofdstuk3: TMenuItem;
@@ -41,6 +42,7 @@ type
     procedure mniGaussClick(Sender: TObject);
     procedure mniHoogte1Click(Sender: TObject);
     procedure mniHoogte2Click(Sender: TObject);
+    procedure mniLevelClick(Sender: TObject);
     procedure mniLissa1Click(Sender: TObject);
     procedure mniLissa2Click(Sender: TObject);
     procedure mniLissa3Click(Sender: TObject);
@@ -275,6 +277,178 @@ begin
         l := 1 + Floor(m * (1 + z)) mod 10;
 //        if Round(m * z) mod 2 = 0 then
         Pixels[xm + i, ym - j] := EgaColor[l];
+      end;
+    end;
+  end;
+end;
+
+procedure TfrmMain.mniLevelClick(Sender: TObject);
+var
+  d1, d2, d3, d4, p, q, u1, u2, v1, v2, x, xa, xb, xc, xs1, xs2, y, ya, yb, yc, ys1, ys2, za, zb, zc: Double;
+  z: Array [0..8] of Double;
+  i, i1, i2, i3, imax, j, jmax, k, kmax, sa, sb, sc, t: Integer;
+  table : Array [0..2,0..2,0..2] of Integer;
+  data: Array of Integer = (1,7,4,6,11,9,3,10,2,5,12,8,13,14,
+                            13,8,12,5,2,10,3,9,11,6,4,7,1);
+
+  function fna(x, y: Double): Double;
+  begin
+    Result := SIN(X * X + Y * Y - 2 * X + 1) * SIN(X * X + Y * Y + 2 * X + 1);
+  end;
+
+  procedure Multiswitch;
+  begin
+    za := fna(xa,ya)-z[k];
+    zb := fna(xb,yb)-z[k];
+    sa := 1+Sign(za);
+    sb := 1+Sign(zb);
+    t := Table[sa,sb,sc];
+    Case t of
+    1: ;
+    2:
+      begin
+        u1 := xa-za*(xb-xa)/(zb-za);
+        v1 := ya-za*(yb-ya)/(zb-za);
+        u2 := xa-za*(xc-xa)/(zc-za);
+        v2 := ya-za*(yc-ya)/(zc-za);
+        pbMain.Canvas.Line(Round(xOff+xFac*u1),Round(yOff+yFac*v1),Round(xOff+xFac*u2),Round(yOff+yFac*v2));
+      end;
+    3:
+      begin
+        u1 := xb-zb*(xc-xb)/(zc-zb);
+        v1 := yb-zb*(yc-yb)/(zc-zb);
+        u2 := xb-zb*(xa-xb)/(za-zb);
+        v2 := yb-zb*(ya-yb)/(za-zb);
+        pbMain.Canvas.Line(Round(xOff+xFac*u1),Round(yOff+yFac*v1),Round(xOff+xFac*u2),Round(yOff+yFac*v2));
+      end;
+    4:
+      begin
+        u1 := xc-zc*(xa-xc)/(za-zc);
+        v1 := yc-zc*(ya-yc)/(za-zc);
+        u2 := xc-zc*(xb-xc)/(zb-zc);
+        v2 := yc-zc*(yb-yc)/(zb-zc);
+        pbMain.Canvas.Line(Round(xOff+xFac*u1),Round(yOff+yFac*v1),Round(xOff+xFac*u2),Round(yOff+yFac*v2));
+      end;
+    5:
+      pbMain.Canvas.Pixels[Round(xOff+xFac*xa),Round(yOff+yFac*ya)] := clYellow;
+    6:
+      pbMain.Canvas.Pixels[Round(xOff+xFac*xb),Round(yOff+yFac*yb)] := clYellow;
+    7:
+      pbMain.Canvas.Pixels[Round(xOff+xFac*xc),Round(yOff+yFac*yc)] := clYellow;
+    8:
+      begin
+        u1 := xa;
+        v1 := ya;
+        u2 := xc-zc*(xb-xc)/(zb-zc);
+        v2 := yc-zc*(yb-yc)/(zb-zc);
+        pbMain.Canvas.Line(Round(xOff+xFac*u1),Round(yOff+yFac*v1),Round(xOff+xFac*u2),Round(yOff+yFac*v2));
+      end;
+    9:
+      begin
+        u1 := xb;
+        v1 := yb;
+        u2 := xa-za*(xc-xa)/(zc-za);
+        v2 := ya-za*(yc-ya)/(zc-za);
+        pbMain.Canvas.Line(Round(xOff+xFac*u1),Round(yOff+yFac*v1),Round(xOff+xFac*u2),Round(yOff+yFac*v2));
+      end;
+    10:
+      begin
+        u1 := xc;
+        v1 := yc;
+        u2 := xb-zb*(xa-xb)/(za-zb);
+        v2 := yb-zb*(ya-yb)/(za-zb);
+        pbMain.Canvas.Line(Round(xOff+xFac*u1),Round(yOff+yFac*v1),Round(xOff+xFac*u2),Round(yOff+yFac*v2));
+      end;
+    11:
+      pbMain.Canvas.Line(Round(xOff+xFac*xb),Round(yOff+yFac*yb),Round(xOff+xFac*xc),Round(yOff+yFac*yc));
+    12:
+      pbMain.Canvas.Line(Round(xOff+xFac*xc),Round(yOff+yFac*yc),Round(xOff+xFac*xa),Round(yOff+yFac*ya));
+    13:
+      pbMain.Canvas.Line(Round(xOff+xFac*xa),Round(yOff+yFac*ya),Round(xOff+xFac*xb),Round(yOff+yFac*yb));
+    14:
+      begin
+        pbMain.Canvas.Line(Round(xOff+xFac*xb),Round(yOff+yFac*yb),Round(xOff+xFac*xc),Round(yOff+yFac*yc));
+        pbMain.Canvas.Line(Round(xOff+xFac*xc),Round(yOff+yFac*yc),Round(xOff+xFac*xa),Round(yOff+yFac*ya));
+        pbMain.Canvas.Line(Round(xOff+xFac*xa),Round(yOff+yFac*ya),Round(xOff+xFac*xb),Round(yOff+yFac*yb));
+      end;
+    end;
+  end;
+
+begin
+  prog := 10;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: Level lines of z=(x,y) for -1<z<1';
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  xFac := pbMain.Width / 9.6;
+  yFac := pbMain.Height / 7.2;
+  xs1 := -pi;
+  xs2 := pi;
+  ys1 := -pi;
+  ys2 := pi;
+  with pbMain.Canvas do
+  begin
+    Rectangle(Round(xOff+xFac*xs1),Round(yOff+yFac*ys1),Round(xOff+xFac*xs2),Round(yOff+yFac*ys2));
+    imax := 128;
+    jmax := 128;
+    p := (xs2-xs1)/imax;
+    q := (ys2-ys1)/imax;
+    kmax := 8;
+    for k := 0 to kmax do
+    begin
+      z[k] := -1+2*k/kmax;
+    end;
+    i := 0;
+    for i1 := 0 to 2 do
+    begin
+      for i2 := 0 to 2 do
+      begin
+        for i3 := 0 to 2 do
+        begin
+          table[i1,i2,i3] := data[i];
+          Inc(i);
+        end;
+      end;
+    end;
+    for i := 0 to imax - 1 do
+    begin
+      for j := 0 to jmax - 1 do
+      begin
+        x := xs1 + p * i;
+        y := ys1 + q * j;
+        d1 := fna(x,y);
+        d2 := fna(x+p,y);
+        d3 := fna(x,y+q);
+        d4 := fna(x+p,y+q);
+        for k := 0 to kmax do
+        begin
+          if (z[k] < d1) and (z[k] < d2) and (z[k] < d3) and (z[k] < d4) then Continue;
+          if (z[k] > d1) and (z[k] > d2) and (z[k] > d3) and (z[k] > d4) then Continue;
+          xc := x+p/2;
+          yc := y+q/2;
+          zc := (d1+d2+d3+d4)/4-z[k];
+          sc := 1+Sign(zc);
+          xa := x;
+          ya := y;
+          xb := x+p;
+          yb := y;
+          Multiswitch;
+          xa := x+p;
+          ya := y;
+          xb := x+p;
+          yb := y+q;
+          Multiswitch;
+          xa := x+p;
+          ya := y+q;
+          xb := x;
+          yb := y+q;
+          Multiswitch;
+          xa := x+p;
+          ya := y+q;
+          xb := x;
+          yb := y;
+          Multiswitch;
+        end;
       end;
     end;
   end;

@@ -136,6 +136,10 @@ object frmMain: TfrmMain
           Caption = 'Hoogte 2'
           OnClick = mniHoogte2Click
         end
+        object mniLevel: TMenuItem
+          Caption = 'Level lines of z=(x,y) for -1<z<1'
+          OnClick = mniLevelClick
+        end
       end
     end
   end
