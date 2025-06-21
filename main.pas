@@ -13,6 +13,7 @@ type
   { TfrmMain }
 
   TfrmMain = class(TForm)
+    mniPatroon1: TMenuItem;
     mniLevel: TMenuItem;
     mniHoogte2: TMenuItem;
     mniHoogte1: TMenuItem;
@@ -47,6 +48,7 @@ type
     procedure mniLissa2Click(Sender: TObject);
     procedure mniLissa3Click(Sender: TObject);
     procedure mniLissafClick(Sender: TObject);
+    procedure mniPatroon1Click(Sender: TObject);
     procedure mniPriemClick(Sender: TObject);
     procedure mniPythkleedClick(Sender: TObject);
     procedure seParameter1Change(Sender: TObject);
@@ -138,6 +140,10 @@ begin
     begin
       mniLissa3Click(Sender);
     end;
+  11:
+    begin
+      mniPatroon1Click(Sender);
+    end;
   end;
 end;
 
@@ -176,7 +182,7 @@ procedure TfrmMain.mniGaussClick(Sender: TObject);
 var
   n, n1, n2: Integer;
   a, b, f, f1, f2, s: Double;
-  label nextpoint;
+  WrongNumber: Boolean;
 begin
   prog := 3;
   pbClear;
@@ -194,6 +200,7 @@ begin
       for n1 := n2 to n do
       begin
         s := Sqrt(n1*n1+n2*n2);
+        WrongNumber := s <= 1;
         f2 := 0;
         repeat
           f1 := 0;
@@ -203,21 +210,24 @@ begin
             begin
               a := (n1*f1+n2*f2)/f;
               b := Abs(n1*f2-n2*f1)/f;
-              if (a - Trunc(a) = 0) and (b - Trunc(b) = 0) then Goto nextpoint;
+              //if (a - Trunc(a) = 0) and (b - Trunc(b) = 0) then Goto nextpoint;
+              WrongNumber := (a - Trunc(a) = 0) and (b - Trunc(b) = 0);
             end;
             f1 := f1 + 1;
-          until (f1 * f1 + f2 * f2 > s);
+          until (f1 * f1 + f2 * f2 > s) or WrongNumber;
           f2 := f2 + 1;
-        until (f2 * f2 > s);
-        EllipseC(Round(xOff+xFac*n1),Round(yOff+yFac*n2),3,3);
-        EllipseC(Round(xOff+xFac*n2),Round(yOff+yFac*n1),3,3);
-        EllipseC(Round(xOff+xFac*-n1),Round(yOff+yFac*n2),3,3);
-        EllipseC(Round(xOff+xFac*-n2),Round(yOff+yFac*n1),3,3);
-        EllipseC(Round(xOff+xFac*-n1),Round(yOff+yFac*-n2),3,3);
-        EllipseC(Round(xOff+xFac*-n2),Round(yOff+yFac*-n1),3,3);
-        EllipseC(Round(xOff+xFac*n1),Round(yOff+yFac*-n2),3,3);
-        EllipseC(Round(xOff+xFac*n2),Round(yOff+yFac*-n1),3,3);
-        nextpoint:
+        until (f2 * f2 > s) or WrongNumber;
+        if not WrongNumber then
+        begin
+          EllipseC(Round(xOff+xFac*n1),Round(yOff+yFac*n2),3,3);
+          EllipseC(Round(xOff+xFac*n2),Round(yOff+yFac*n1),3,3);
+          EllipseC(Round(xOff+xFac*-n1),Round(yOff+yFac*n2),3,3);
+          EllipseC(Round(xOff+xFac*-n2),Round(yOff+yFac*n1),3,3);
+          EllipseC(Round(xOff+xFac*-n1),Round(yOff+yFac*-n2),3,3);
+          EllipseC(Round(xOff+xFac*-n2),Round(yOff+yFac*-n1),3,3);
+          EllipseC(Round(xOff+xFac*n1),Round(yOff+yFac*-n2),3,3);
+          EllipseC(Round(xOff+xFac*n2),Round(yOff+yFac*-n1),3,3);
+        end;
       end;
     end;
   end;
@@ -464,8 +474,8 @@ begin
   frmMain.Caption := 'Computer simulaties: Lissajous krommen';
   xOff := pbMain.Width div 2;
   yOff := pbMain.Height div 2;
-  xFac := pbMain.Width / 3;
-  yFac := pbMain.Height / 3;
+  xFac := pbMain.Width / 2;
+  yFac := pbMain.Height / 2;
   Panel1.Visible := True;
   GroupBox1.Visible := True;
   lblParameter1.Visible := True;
@@ -648,6 +658,45 @@ begin
       else
         LineTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
       t := t + h;
+    end;
+  end;
+end;
+
+procedure TfrmMain.mniPatroon1Click(Sender: TObject);
+var
+  c, i, j, n, xm, ym: Integer;
+  x, y, z: Double;
+begin
+  prog := 11;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: Vierkant patroon';
+  Panel1.Visible := True;
+  GroupBox1.Visible := True;
+  lblParameter1.Visible := True;
+  lblParameter1.Caption := 'Geef een getal van drie cijfers';
+  seParameter1.Visible := True;
+  seParameter1.Increment := 1;
+  seParameter1.MinValue := 100;
+  seParameter1.MaxValue := 999;
+  {xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;}
+  xFac := pbMain.Width / 2;
+  yFac := pbMain.Height / 2;
+  xm := pbMain.Width div 2;
+  ym := pbMain.Height div 2;
+  n := 50;
+  c := seParameter1.Value;
+  pbMain.Canvas.Rectangle(Round(xm+(-5*n-10)),Round(ym+(-5*n-10)),
+    Round(xm+(5*n+10)),Round(ym+(5*n+10)));
+  for i := -n to n do
+  begin
+    for j := -n to n do
+    begin
+      x := i / n;
+      y := j / n;
+      z := (1-x*x)*(1-y*y); //functiekeuze
+      if Trunc(c*z) mod 2 = 0 then
+        pbMain.Canvas.EllipseC(Round(xm+(5*i)),Round(ym+(-5*j)),2,2);
     end;
   end;
 end;

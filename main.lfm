@@ -140,6 +140,10 @@ object frmMain: TfrmMain
           Caption = 'Level lines of z=(x,y) for -1<z<1'
           OnClick = mniLevelClick
         end
+        object mniPatroon1: TMenuItem
+          Caption = 'Een vierkant patroon'
+          OnClick = mniPatroon1Click
+        end
       end
     end
   end
