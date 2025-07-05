@@ -144,6 +144,25 @@ object frmMain: TfrmMain
           Caption = 'Een vierkant patroon'
           OnClick = mniPatroon1Click
         end
+        object mniPatroon2: TMenuItem
+          Caption = 'Rechthoekig kruissteekjespatroon'
+          OnClick = mniPatroon2Click
+        end
+        object mniPatroon3: TMenuItem
+          Caption = 'Patroon met bergen'
+          OnClick = mniPatroon3Click
+        end
+        object mniPatroon4: TMenuItem
+          Caption = 'Een rechthoekig patroon'
+          OnClick = mniPatroon4Click
+        end
+      end
+      object mniHoofdstuk4: TMenuItem
+        Caption = 'Hoofdstuk 4'
+        object mniZweving: TMenuItem
+          Caption = 'Zwevingen van golven'
+          OnClick = mniZwevingClick
+        end
       end
     end
   end

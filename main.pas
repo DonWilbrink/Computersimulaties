@@ -13,6 +13,11 @@ type
   { TfrmMain }
 
   TfrmMain = class(TForm)
+    mniZweving: TMenuItem;
+    mniHoofdstuk4: TMenuItem;
+    mniPatroon4: TMenuItem;
+    mniPatroon3: TMenuItem;
+    mniPatroon2: TMenuItem;
     mniPatroon1: TMenuItem;
     mniLevel: TMenuItem;
     mniHoogte2: TMenuItem;
@@ -49,8 +54,12 @@ type
     procedure mniLissa3Click(Sender: TObject);
     procedure mniLissafClick(Sender: TObject);
     procedure mniPatroon1Click(Sender: TObject);
+    procedure mniPatroon2Click(Sender: TObject);
+    procedure mniPatroon3Click(Sender: TObject);
+    procedure mniPatroon4Click(Sender: TObject);
     procedure mniPriemClick(Sender: TObject);
     procedure mniPythkleedClick(Sender: TObject);
+    procedure mniZwevingClick(Sender: TObject);
     procedure seParameter1Change(Sender: TObject);
     procedure seParameter2Change(Sender: TObject);
     procedure seParameter3Change(Sender: TObject);
@@ -121,6 +130,34 @@ begin
         end;
         Inc(n);
       end;
+    end;
+  end;
+end;
+
+procedure TfrmMain.mniZwevingClick(Sender: TObject);
+var
+  s1, s2: Integer;
+  t, y1, y2: Double;
+begin
+  prog := 15;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: Zwevingen van golven';
+  xOff := 0;
+  yOff := pbMain.Height div 2;
+  xFac := pbMain.Width;
+  yFac := -pbMain.Height/6;
+  t := 0;
+  s1 := 30;
+  s2 := 33;
+  with pbMain.Canvas do
+  begin
+    Line(xOff,yOff,pbMain.Width,yOff);
+    while t < 1 do
+    begin
+      y1 := Sin(2 * s1 * pi * t);
+      y2 := Sin(2 * s2 * pi * t);
+      Pixels[Round(xOff+xFac*t), Round(yOff+yFac*(y1 + y2))] := clYellow;
+      t := t + 0.0001;
     end;
   end;
 end;
@@ -699,6 +736,134 @@ begin
         pbMain.Canvas.EllipseC(Round(xm+(5*i)),Round(ym+(-5*j)),2,2);
     end;
   end;
+end;
+
+procedure TfrmMain.mniPatroon2Click(Sender: TObject);
+var
+  c, d, h, i, j, m, n1, n2, xm, ym: Integer;
+  x, y, z: Single;
+
+  procedure Kruis;
+  begin
+    with pbMain.Canvas do
+    begin
+      MoveTo(Round(x-h),Round(y-h));
+      LineTo(Round(x+h),Round(y+h));
+      MoveTo(Round(x-h),Round(y+h));
+      LineTo(Round(x+h),Round(y-h));
+    end;
+  end;
+
+begin
+  prog := 12;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: Rechthoekig kruissteekjespatroon';
+  xm := pbMain.Width div 2;
+  ym := pbMain.Height div 2;
+  n1 := 40;
+  n2 := 30;
+  m := 5;
+  d := 6;
+  h := 3;
+  c := 500;
+  for i := 0 to n1 do
+  begin
+    for j := 0 to n2 do
+    begin
+      x := i / n1;
+      y := j / n2;
+      z := (1-x*x)*(1-y*y); //functiekeuze
+      if Trunc(c*z) mod m = 0 then
+      begin
+        x := xm + d * i;
+        y := ym - d * j;
+        Kruis;
+        x := xm + d * i;
+        y := ym + d * j;
+        Kruis;
+        x := xm - d * i;
+        y := ym - d * j;
+        Kruis;
+        x := xm - d * i;
+        y := ym + d * j;
+        Kruis;
+      end;
+    end;
+  end;
+end;
+
+procedure TfrmMain.mniPatroon3Click(Sender: TObject);
+var
+  c, i, j, n1, n2, xm, ym: Integer;
+  x, y, z, z1, z2, z3: Double;
+
+  function FNA(x,y,a,b: Double): Double;
+  begin
+    Result := Exp(-a*x*x-b*y*y);
+  end;
+
+begin
+  prog := 13;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: Patroon met bergen';
+  xm := pbMain.Width div 2;
+  ym := pbMain.Height div 2;
+  n1 :=  49 * pbMain.Width div 100;
+  n2 := n1;
+  c := 30;
+  for i := -n1 to n1 do
+  begin
+    for j := -n2 to n2 do
+    begin
+      x := 1.5 * i / n1;
+      y := 1.5 * j / n2;
+      z1 := FNA(x-0.6,y-0.3,5,5);
+      z2 := FNA(x+0.6,y-0.3,5,5);
+      z3 := FNA(x,y+0.6,2.5,10);
+      z := z1 + z2 + z3 + 0.1 * (x * x + 4 * y * y); //functiekeuze
+      if Floor(c * z) mod 2 = 0 then
+        pbMain.Canvas.EllipseC(xm + i, ym - j, 2, 2);
+    end;
+  end;
+end;
+
+procedure TfrmMain.mniPatroon4Click(Sender: TObject);
+var
+  c, i, j, n1, n2, xm, x1, x2, ym, y1, y2: Integer;
+  x, y, z: Double;
+  Col: Array of Integer = (0,1,9,2,10,4,12,6,14); //kleurentabel
+  l: TColor;
+begin
+  prog := 14;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: Een rechthoekig patroon';
+  xm := pbMain.Width div 2;
+  ym := pbMain.Height div 2;
+  n1 :=  49 * pbMain.Width div 100;
+  n2 := 49 * pbMain.Height div 100;
+  c := 1000;
+  for i := 0 to n1 do
+  begin
+    for j := 0 to n2 do
+    begin
+      x := i / n1;
+      y := j / n2;
+      z := (1 - x * x) * (1 - y * y); //functiekeuze
+      l := EgaColor[Col[1 + Floor(c * z) mod 8]];
+      with pbMain.Canvas do
+      begin
+        Pixels[xm + i, ym - j] := l;
+        Pixels[xm + i, ym + j] := l;
+        Pixels[xm - i, ym - j] := l;
+        Pixels[xm - i, ym + j] := l;
+      end;
+    end;
+  end;
+  {x1 := xm - n1 - 10;
+  y1 := ym - n2 - 10;
+  x2 := xm + n1 + 10;
+  y2 := ym + n2 + 10;
+  pbMain.Canvas.Rectangle(x1,y1,x2,y2); }
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
