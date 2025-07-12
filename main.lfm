@@ -163,6 +163,22 @@ object frmMain: TfrmMain
           Caption = 'Zwevingen van golven'
           OnClick = mniZwevingClick
         end
+        object mniHek: TMenuItem
+          Caption = 'Zwevingen bij hekken'
+          OnClick = mniHekClick
+        end
+        object mniMoireL1: TMenuItem
+          Caption = 'Interferentie evenwijdige lijnen'
+          OnClick = mniMoireL1Click
+        end
+        object mniMoireL2: TMenuItem
+          Caption = 'Tweede bundel iets gedraaid'
+          OnClick = mniMoireL2Click
+        end
+        object mniMoireC1: TMenuItem
+          Caption = 'Interferentie van cirkelbundel'
+          OnClick = mniMoireC1Click
+        end
       end
     end
   end

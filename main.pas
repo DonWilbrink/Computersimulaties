@@ -13,6 +13,10 @@ type
   { TfrmMain }
 
   TfrmMain = class(TForm)
+    mniMoireC1: TMenuItem;
+    mniMoireL2: TMenuItem;
+    mniMoireL1: TMenuItem;
+    mniHek: TMenuItem;
     mniZweving: TMenuItem;
     mniHoofdstuk4: TMenuItem;
     mniPatroon4: TMenuItem;
@@ -46,6 +50,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure mniGaussClick(Sender: TObject);
+    procedure mniHekClick(Sender: TObject);
     procedure mniHoogte1Click(Sender: TObject);
     procedure mniHoogte2Click(Sender: TObject);
     procedure mniLevelClick(Sender: TObject);
@@ -53,6 +58,9 @@ type
     procedure mniLissa2Click(Sender: TObject);
     procedure mniLissa3Click(Sender: TObject);
     procedure mniLissafClick(Sender: TObject);
+    procedure mniMoireC1Click(Sender: TObject);
+    procedure mniMoireL1Click(Sender: TObject);
+    procedure mniMoireL2Click(Sender: TObject);
     procedure mniPatroon1Click(Sender: TObject);
     procedure mniPatroon2Click(Sender: TObject);
     procedure mniPatroon3Click(Sender: TObject);
@@ -267,6 +275,41 @@ begin
         end;
       end;
     end;
+  end;
+end;
+
+procedure TfrmMain.mniHekClick(Sender: TObject);
+var
+  a1, a2, b, h1, h2, i, k, hdiv2: Integer;
+begin
+  prog := 16;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: Zwevingen bij hekken';
+  a1 := 19;
+  a2 := 22;
+  h1 := 5;
+  h2 := 5;
+  k := 0;
+  b := 150;
+  hdiv2 := pbMain.Height Div 2 - 75;
+  while k*a1+h1 < pbMain.Width - 20 do
+  begin
+    pbMain.Canvas.Pen.Color := clYellow;
+    for i := 0 to h1 do
+    begin
+      pbMain.Canvas.Line(20+i+k*a1,hdiv2-10,20+i+k*a1,hdiv2+b);
+    end;
+    Inc(k);
+  end;
+  k := 0;
+  while k*a2+h2 < pbMain.Width - 20 do
+  begin
+    pbMain.Canvas.Pen.Color := clRed;
+    for i := 0 to h2 do
+    begin
+      pbMain.Canvas.Line(20+i+k*a2,hdiv2,20+i+k*a2,hdiv2+10+b);
+    end;
+    Inc(k);
   end;
 end;
 
@@ -697,6 +740,96 @@ begin
       t := t + h;
     end;
   end;
+end;
+
+procedure TfrmMain.mniMoireC1Click(Sender: TObject);
+var
+  i, m, r, x, xm, y, ym: Integer;
+  h, s: Double;
+begin
+  prog := 19;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: Interferentie evenwijdige lijnen';
+  ym := pbMain.Height div 2;
+  h  := 0.3;
+  for m := 1 to 2 do
+  begin
+    if m = 1 then
+      xm := pbMain.Width div 2 - 40
+    else
+      xm := pbMain.Width div 2;
+    for i := 0 to 60 do
+    begin
+      r := 1 + 4 * i;
+      s := 0;
+      x := xm + r;
+      y := ym;
+      pbMain.Canvas.MoveTo(x,y);
+      repeat
+        s := s + h / r;
+        pbMain.Canvas.LineTo(Round(xm + r * Cos(s)),Round(ym + r * Sin(s)));
+      until s > 2 * pi;
+    end;
+  end;
+end;
+
+procedure TfrmMain.mniMoireL1Click(Sender: TObject);
+var
+  a, b, x1, x2, y1, y2: Double;
+  i, j: Integer;
+begin
+  prog := 17;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: Interferentie evenwijdige lijnen';
+  a := 0.3;
+  b := 0.32;
+  i := 0;
+  pbMain.Canvas.Pen.Color := clBlue;
+  repeat
+    x1 := 100;
+    y1 := 80+i/a;
+    x2 := pbMain.Width - 100;
+    y2 := y1;
+    pbMain.Canvas.Line(Round(x1),Round(y1),Round(x2),Round(y2));
+    Inc(i);
+  until y1 > pbMain.Height - 80;
+  j := 0;
+  pbMain.Canvas.Pen.Color := clRed;
+  repeat
+    x1 := 100;
+    y1 := 80+j/b;
+    x2 := pbMain.Width - 100;
+    y2 := y1;
+    pbMain.Canvas.Line(Round(x1),Round(y1),Round(x2),Round(y2));
+    Inc(j);
+  until y1 > pbMain.Height - 80;
+end;
+
+procedure TfrmMain.mniMoireL2Click(Sender: TObject);
+var
+  i: Integer;
+  Alfa, c, s, u1, u2, v1, v2, x1, x2, y1, y2: Double;
+begin
+  prog := 18;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: Interferentie evenwijdige lijnen, tweede bundel iets gedraaid';
+  i := 0;
+  Alfa := 0.02;
+  c := Cos(Alfa);
+  s := Sin(Alfa);
+  repeat
+    x1 := 100;
+    y1 := 80 + 4 * i;
+    x2 := pbMain.Width - 100;
+    y2 := y1;
+    pbMain.Canvas.Line(Round(x1),Round(y1),Round(x2),Round(y2));
+    u1 := c * x1 - s * y1;
+    v1 := s * x1 + c * y1;
+    u2 := c * x2 - s * y2;
+    v2 := s * x2 + c * y2;
+    pbMain.Canvas.Line(Round(u1),Round(v1),Round(u2),Round(v2));
+    Inc(i);
+  until y1 = pbMain.Height - 80;
 end;
 
 procedure TfrmMain.mniPatroon1Click(Sender: TObject);
