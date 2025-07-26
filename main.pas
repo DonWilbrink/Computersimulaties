@@ -13,6 +13,11 @@ type
   { TfrmMain }
 
   TfrmMain = class(TForm)
+    mniMoireS4: TMenuItem;
+    mniMoireS2: TMenuItem;
+    mniMoireS3: TMenuItem;
+    mniMoireS1: TMenuItem;
+    mniMoireC2: TMenuItem;
     mniMoireC1: TMenuItem;
     mniMoireL2: TMenuItem;
     mniMoireL1: TMenuItem;
@@ -49,6 +54,7 @@ type
     seParameter3: TSpinEdit;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure mniMoireS2Click(Sender: TObject);
     procedure mniGaussClick(Sender: TObject);
     procedure mniHekClick(Sender: TObject);
     procedure mniHoogte1Click(Sender: TObject);
@@ -59,8 +65,12 @@ type
     procedure mniLissa3Click(Sender: TObject);
     procedure mniLissafClick(Sender: TObject);
     procedure mniMoireC1Click(Sender: TObject);
+    procedure mniMoireC2Click(Sender: TObject);
     procedure mniMoireL1Click(Sender: TObject);
     procedure mniMoireL2Click(Sender: TObject);
+    procedure mniMoireS1Click(Sender: TObject);
+    procedure mniMoireS3Click(Sender: TObject);
+    procedure mniMoireS4Click(Sender: TObject);
     procedure mniPatroon1Click(Sender: TObject);
     procedure mniPatroon2Click(Sender: TObject);
     procedure mniPatroon3Click(Sender: TObject);
@@ -100,6 +110,25 @@ implementation
 procedure TfrmMain.mniPythkleedClick(Sender: TObject);
 var
   m, max, n, x, xm, y, ym: Integer;
+
+  function GCDiter(a,b : integer) : integer;
+  var c : integer;
+  begin
+    while b<>0 do
+      begin
+        c:=a;
+        a:=b;
+        b:=c mod b;
+      end;
+    GCDiter:=abs(a);
+  end;
+
+  function even(i : integer) : boolean;
+  begin
+    even := not odd(i);
+    //even:=i mod 2 = 0;
+  end;
+
 begin
   prog := 1;
   pbClear;
@@ -117,7 +146,7 @@ begin
       begin
         x := m*m-n*n;
         y := 2*m*n;
-        if (x < max) and (y < max) then
+        if (x < max) and (y < max) and (GCDiter(M,N)=1) and ((odd(M) and even(N)) or (odd(N) and even(M))) then
         begin
           {Pixels[xm+x,ym-y] := clYellow;
           Pixels[xm+x,ym+y] := clYellow;
@@ -773,6 +802,34 @@ begin
   end;
 end;
 
+procedure TfrmMain.mniMoireC2Click(Sender: TObject);
+var
+  i, m, xm, ym: Integer;
+  h, r, s, x, y: Double;
+begin
+  prog := 20;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: Interferentie van cirkelbundels';
+  ym := pbMain.Height div 2;
+  h := 0.3;
+  for m := 1 to 2 do
+  begin
+    if m = 1 then xm := pbMain.Width div 2 - 20 else xm := pbMain.Width div 2;
+    for i := 5 to 80 do
+    begin
+      r := 24 * Sqrt(i);
+      s := 0;
+      x := xm + r;
+      y := ym;
+      pbMain.Canvas.MoveTo(Round(x),Round(y));
+      repeat
+        s := s + h / r;
+        pbMain.Canvas.LineTo(Round(xm + r * Cos(s)),Round(ym + r * Sin(s)));
+      until s > 2 * pi;
+    end;
+  end;
+end;
+
 procedure TfrmMain.mniMoireL1Click(Sender: TObject);
 var
   a, b, x1, x2, y1, y2: Double;
@@ -830,6 +887,78 @@ begin
     pbMain.Canvas.Line(Round(u1),Round(v1),Round(u2),Round(v2));
     Inc(i);
   until y1 = pbMain.Height - 80;
+end;
+
+procedure TfrmMain.mniMoireS1Click(Sender: TObject);
+var
+  a, i, x1, x2, y1, y2: Integer;
+begin
+  prog := 21;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: Interferentie evenwijdige lijnen met pixelrooster van beeldscherm';
+  a := 7; // verticale verplaatsing
+  for i := 1 to 250 do
+  begin
+    x1 := 100;
+    y1 := 50 + 2 * i;
+    x2 := pbMain.Width - 100;
+    y2 := a + y1;
+    pbMain.Canvas.Line(x1,y1,x2,y2);
+  end;
+end;
+
+procedure TfrmMain.mniMoireS3Click(Sender: TObject);
+var
+  i, r, x, xm, y, ym: Integer;
+  h, s: Double;
+begin
+  prog := 23;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: Interferentie van cirkels met pixelrooster van beeldscherm stralen in lineare progressie';
+  xm := pbMain.Width div 2;
+  ym := pbMain.Height div 2;
+  h := 0.2;
+  for i := 10 to 120 do
+  begin
+    r := 1 + 2 * i;
+    s := 0;
+    x := xm + r;
+    y := ym;
+    pbMain.Canvas.MoveTo(x, y);
+    repeat
+      s := s + h / r;
+      pbMain.Canvas.LineTo(Round(xm + r * Cos(s)),Round(ym + r * Sin(s)));
+    until s > 2 * pi;
+  end;
+end;
+
+procedure TfrmMain.mniMoireS4Click(Sender: TObject);
+var
+  i, max, xm, ym: Integer;
+  f, h, r, r1, r2, x, y: Double;
+begin
+  prog := 24;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniMoireS4.Caption;
+  xFac := pbMain.Width div 4;
+  yFac := pbMain.Height div 3;
+  max := 400;
+  h := 0.0015;
+  xm := -4;
+  ym := -1; // middelpunt cirkelbundel
+  r1 := Sqrt(xm * xm + ym * ym);
+  r2 := Sqrt((xm -4) * (xm - 4) + (ym - 3) * (ym - 3));
+  for i := 0 to max do
+  begin
+    r := r1 + (r2 - r1) * i / max;
+    f := -Arctan(ym / Sqrt(r * r - ym * ym));
+    repeat
+      x := xm + r * Cos(f);
+      y := ym + r * Sin(f);
+      pbMain.Canvas.Pixels[Round(xFac * x), Round(yFac * y)] := clYellow;
+      f := f + h;
+    until (y > 4) or (x < -0.1) or (f > 1.6);
+  end;
 end;
 
 procedure TfrmMain.mniPatroon1Click(Sender: TObject);
@@ -1010,11 +1139,29 @@ begin
   flag := Key = VK_ESCAPE;
 end;
 
+procedure TfrmMain.mniMoireS2Click(Sender: TObject);
+var
+  i, x, x0, y, y0: Integer;
+begin
+  prog := 22;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: Interferentie van stralenbundel met pixelrooster van beeldscherm';
+  x0 := pbMain.Width div 2;
+  y0 := 0; // centrum bundel
+  for i := 1 to 160 do
+  begin
+    x := 4 * i;
+    y := pbMain.Height;
+    pbMain.Canvas.Line(x0,y0,x,y);
+  end;
+end;
+
 procedure TfrmMain.pbClear;
 begin
   with pbMain.Canvas do
   begin
     Clear;
+    //Invalidate;
     Brush.Color := clBlack;
     FillRect(0,0,Width,Height);
     Pen.Color := clYellow;

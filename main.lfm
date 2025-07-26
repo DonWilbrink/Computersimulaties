@@ -179,6 +179,26 @@ object frmMain: TfrmMain
           Caption = 'Interferentie van cirkelbundel'
           OnClick = mniMoireC1Click
         end
+        object mniMoireC2: TMenuItem
+          Caption = 'Interferentie van cirkelbundels'
+          OnClick = mniMoireC2Click
+        end
+        object mniMoireS1: TMenuItem
+          Caption = 'Interferentie evenwijdige lijnen met pixelrooster van beeldscherm'
+          OnClick = mniMoireS1Click
+        end
+        object mniMoireS2: TMenuItem
+          Caption = 'Interferentie van stralenbundel met pixelrooster van beeldscherm'
+          OnClick = mniMoireS2Click
+        end
+        object mniMoireS3: TMenuItem
+          Caption = 'Interferentie van cirkels met pixelrooster van beeldscherm stralen in lineare progressie'
+          OnClick = mniMoireS3Click
+        end
+        object mniMoireS4: TMenuItem
+          Caption = 'Interferentie van cirkelbogen met pixelrooster van beeldscherm'
+          OnClick = mniMoireS4Click
+        end
       end
     end
   end
