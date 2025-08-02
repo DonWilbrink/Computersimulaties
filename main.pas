@@ -13,6 +13,8 @@ type
   { TfrmMain }
 
   TfrmMain = class(TForm)
+    mniPotveld1: TMenuItem;
+    mniHoofdstuk5: TMenuItem;
     mniMoireS4: TMenuItem;
     mniMoireS2: TMenuItem;
     mniMoireS3: TMenuItem;
@@ -75,6 +77,7 @@ type
     procedure mniPatroon2Click(Sender: TObject);
     procedure mniPatroon3Click(Sender: TObject);
     procedure mniPatroon4Click(Sender: TObject);
+    procedure mniPotveld1Click(Sender: TObject);
     procedure mniPriemClick(Sender: TObject);
     procedure mniPythkleedClick(Sender: TObject);
     procedure mniZwevingClick(Sender: TObject);
@@ -1126,6 +1129,32 @@ begin
   x2 := xm + n1 + 10;
   y2 := ym + n2 + 10;
   pbMain.Canvas.Rectangle(x1,y1,x2,y2); }
+end;
+
+procedure TfrmMain.mniPotveld1Click(Sender: TObject);
+var
+  h, r, phi: Double;
+  k: Integer;
+begin
+  prog := 25;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniPotveld1.Caption;
+  xFac := pbMain.Width / 5;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  h := 0.2;
+  k := -4;
+  repeat
+    r := Exp(-k * h);
+    pbMain.Canvas.EllipseC(xOff, yOff, Round(xFac * r), Round(xFac * r));
+    k := k + 1;
+  until r < 0.2;
+  r := 2.5;
+  for k := 0 to 7 do
+  begin
+    phi := k * Pi / 4;
+    pbMain.Canvas.Line(xOff, yOff, Round(xOff + xFac * r * Cos(Phi)), Round(yOff + xFac * r * Sin(Phi)));
+  end;
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);

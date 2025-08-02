@@ -200,6 +200,13 @@ object frmMain: TfrmMain
           OnClick = mniMoireS4Click
         end
       end
+      object mniHoofdstuk5: TMenuItem
+        Caption = 'Hoofdstuk 5'
+        object mniPotveld1: TMenuItem
+          Caption = 'Potentiaallijnen en stroomlijnen van een puntbron'
+          OnClick = mniPotveld1Click
+        end
+      end
     end
   end
 end
