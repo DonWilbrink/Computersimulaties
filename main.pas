@@ -13,6 +13,9 @@ type
   { TfrmMain }
 
   TfrmMain = class(TForm)
+    mniPotveld4: TMenuItem;
+    mniPotveld3: TMenuItem;
+    mniPotveld2: TMenuItem;
     mniPotveld1: TMenuItem;
     mniHoofdstuk5: TMenuItem;
     mniMoireS4: TMenuItem;
@@ -78,6 +81,9 @@ type
     procedure mniPatroon3Click(Sender: TObject);
     procedure mniPatroon4Click(Sender: TObject);
     procedure mniPotveld1Click(Sender: TObject);
+    procedure mniPotveld2Click(Sender: TObject);
+    procedure mniPotveld3Click(Sender: TObject);
+    procedure mniPotveld4Click(Sender: TObject);
     procedure mniPriemClick(Sender: TObject);
     procedure mniPythkleedClick(Sender: TObject);
     procedure mniZwevingClick(Sender: TObject);
@@ -87,6 +93,7 @@ type
     procedure seParameter4Change(Sender: TObject);
   private
     procedure pbClear;
+    procedure Cirkel(x,y: Integer; r:Double);
   public
 
   end;
@@ -1144,9 +1151,11 @@ begin
   yOff := pbMain.Height div 2;
   h := 0.2;
   k := -4;
+  pbMain.Canvas.Brush.Style := bsClear;
   repeat
     r := Exp(-k * h);
-    pbMain.Canvas.EllipseC(xOff, yOff, Round(xFac * r), Round(xFac * r));
+    //Cirkel(xOff, yOff, Round(xFac * r));
+    pbMain.Canvas.EllipseC(xOff, yOff, Round(xFac * r),Round(xFac * r));
     k := k + 1;
   until r < 0.2;
   r := 2.5;
@@ -1155,6 +1164,140 @@ begin
     phi := k * Pi / 4;
     pbMain.Canvas.Line(xOff, yOff, Round(xOff + xFac * r * Cos(Phi)), Round(yOff + xFac * r * Sin(Phi)));
   end;
+  pbMain.Canvas.Brush.Style := bsSolid;
+end;
+
+procedure TfrmMain.mniPotveld2Click(Sender: TObject);
+var
+  k, l: Integer;
+  a, b, c, f, h, r: Double;
+begin
+  prog := 26;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniPotveld2.Caption;
+  xFac := pbMain.Width / 6;
+  yFac := pbMain.Height / 6;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  with pbMain.Canvas do
+  begin
+    Brush.Style := bsClear;
+    Pixels[Round(xOff - xFac),Round(yOff)] := clYellow;
+    Pixels[Round(xOff + xFac),Round(yOff)] := clYellow;
+    h := 0.5;
+    for k := -8 to 7 do
+    begin
+      c := Exp(k * h + h / 2);
+      a := (1 + c) / (1 - c);
+      r := 2 * Sqrt(c) / Abs(1 - c);
+      //Cirkel(Round(xOff + xFac * a),yOff,Round(xFac * r));
+      EllipseC(Round(xOff + xFac * a),yOff,Round(xFac * r),Round(xFac * r));
+    end; //for
+    for l := -4 to 4 do
+    begin
+      f := l * Pi / 10;
+      if l <> 0 then
+      begin
+        b := 1 / Tan(f);
+        //Cirkel(xOff,Round(yOff + yFac * b), Round(xFac * Sqrt(1 + b * b)));
+        EllipseC(xOff,Round(yOff + yFac * b), Round(xFac * Sqrt(1 + b * b)),Round(xFac * Sqrt(1 + b * b)));
+      end; //if
+    end; //for
+    Brush.Style := bsSolid;
+  end; //with
+end;
+
+procedure TfrmMain.mniPotveld3Click(Sender: TObject);
+var
+  c, e, h, r, t, x, y: Double;
+  i, k, l: Integer;
+begin
+  prog := 27;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniPotveld3.Caption;
+  xFac := pbMain.Width / 4;
+  yFac := pbMain.Height / 4;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  h := 0.2;
+  e := 0.00001;
+  for k := 0 to 8 do
+  begin
+    c := Exp(h * k) + e;
+    for i := 0 to 800 do
+    begin
+      t := 2 * i * Pi / 800;
+      r := Sqrt(Cos(2 * t) + Sqrt(c - Power(Sin(2 * t),2)));
+      pbMain.Canvas.Pixels[Round(xOff + xFac * (r * Cos(t))),Round(yOff + yFac * (r * Sin(t)))] := clYellow;
+    end; // for i
+  end; //for k
+  for l := 1 to 8 do
+  begin
+    c := Exp(-h * l);
+    for i := 0 to 200 do
+    begin
+      t := i * Pi / 200;
+      x := Sqrt(1 + c * Cos(t));
+      y := Sqrt(-2 - c * Cos(t) + Sqrt(4 + 4 * c * Cos(t) + c * c) + e);
+      pbMain.Canvas.Pixels[Round(xOff + xFac * x),Round(yOff + yFac * y)] := clYellow;
+      pbMain.Canvas.Pixels[Round(xOff + xFac * x),Round(yOff + yFac * -y)] := clYellow;
+      pbMain.Canvas.Pixels[Round(xOff + xFac * -x),Round(yOff + yFac * y)] := clYellow;
+      pbMain.Canvas.Pixels[Round(xOff + xFac * -x),Round(yOff + yFac * -y)] := clYellow;
+    end; // for i
+  end; //for l
+end;
+
+procedure TfrmMain.mniPotveld4Click(Sender: TObject);
+var
+  k, m: Integer;
+  c, f, h, r, s, t: Double;
+
+  procedure Pot1;
+  Var
+    i: Integer;
+  begin
+    for i := 0 to 1000 do
+    begin
+      t := i * m * Pi / 500;
+      s := 1 + 2 * c * Cos(t) + c * c;
+      r := Power(s,(1 / (2 * m)));
+      f := (t - ArcTan(Sin(t) / (c + Cos(t)))) / m;
+      pbMain.Canvas.Pixels[Round(xOff + xFac * (r * Cos(f))),Round(yOff + yFac * (r * Sin(f)))] := clYellow;
+    end; //for i
+  end;
+
+  procedure Pot2;
+  var
+    i, j: Integer;
+  begin
+    for i := 0 to m - 1 do
+    begin
+      for j := 0 to 200 do
+      begin
+        t := j * Pi / 100;
+        s := 1 + 2 * c * Cos(t) + c * c;
+        r := Power(s,(1 / (2 * m)));
+        f := (ArcTan(c * Sin(t) / (1 + c * Cos(t))) + 2 * i * Pi) / m;
+        pbMain.Canvas.Pixels[Round(xOff + xFac * (r * Cos(f))),Round(yOff + yFac * (r * Sin(f)))] := clYellow;
+      end; // for j
+    end; //for i
+  end;
+
+begin
+  prog := 28;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniPotveld4.Caption;
+  xFac := pbMain.Width / 3;
+  yFac := pbMain.Height / 3;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  m := 5;
+  h := 0.2;
+  for k := -4 to 8 do
+  begin
+    c := Exp(0.001 + h * k);
+    if k > 0 then Pot1 else Pot2;
+  end; //for k
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
@@ -1203,6 +1346,32 @@ begin
   seParameter2.Visible := False;
   seParameter3.Visible := False;
   seParameter4.Visible := False;
+end;
+
+procedure TfrmMain.Cirkel(x, y: Integer; r: Double);
+var
+  w1, x1, x2, y1, y2: Integer;
+  rd, w: Double;
+begin
+  rd := pi/180;
+  for w1 := 0 to 360 do
+  begin
+    w := w1 * rd;
+    if w = 0 then
+    begin
+      x1 := Round(x + r * Cos(w));
+      y1 := Round(y - r * Sin(w));
+    end
+    else
+    begin
+      x2 := Round(x + r * Cos(w));
+      y2 := Round(y - r * Sin(w));
+      pbMain.Canvas.MoveTo(x1,y1);
+      pbMain.Canvas.LineTo(x2,y2);
+      x1 := x2;
+      y1 := y2;
+    end;
+  end;
 end;
 
 end.
