@@ -88,8 +88,8 @@ object frmMain: TfrmMain
     end
   end
   object Hoofdminu: TMainMenu
-    Left = 848
-    Top = 24
+    Left = 840
+    Top = 16
     object mniHoofdstukken: TMenuItem
       Caption = 'Hoofdstukken'
       object mniHoofdstuk1: TMenuItem
@@ -217,6 +217,17 @@ object frmMain: TfrmMain
         object mniPotveld4: TMenuItem
           Caption = 'Potentiaallijnen van een regelmatige m-hoek'
           OnClick = mniPotveld4Click
+        end
+      end
+      object mniHoofdstuk6: TMenuItem
+        Caption = 'Hoofdstuk 6'
+        object mniBoommc: TMenuItem
+          Caption = 'Zelfgelijkvormige fractal'
+          OnClick = mniBoommcClick
+        end
+        object mniBoombt: TMenuItem
+          Caption = 'Kale Pythagoras boom'
+          OnClick = mniBoombtClick
         end
       end
     end

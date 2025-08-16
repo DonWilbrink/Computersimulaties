@@ -13,6 +13,9 @@ type
   { TfrmMain }
 
   TfrmMain = class(TForm)
+    mniBoombt: TMenuItem;
+    mniBoommc: TMenuItem;
+    mniHoofdstuk6: TMenuItem;
     mniPotveld4: TMenuItem;
     mniPotveld3: TMenuItem;
     mniPotveld2: TMenuItem;
@@ -59,6 +62,8 @@ type
     seParameter3: TSpinEdit;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure mniBoombtClick(Sender: TObject);
+    procedure mniBoommcClick(Sender: TObject);
     procedure mniMoireS2Click(Sender: TObject);
     procedure mniGaussClick(Sender: TObject);
     procedure mniHekClick(Sender: TObject);
@@ -1309,6 +1314,123 @@ procedure TfrmMain.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   flag := Key = VK_ESCAPE;
+end;
+
+procedure TfrmMain.mniBoombtClick(Sender: TObject);
+var
+  a1, a2, alfa, b1, b2, beta, ca, cb, diff, eps, g, u, v, xan, xbn, yan, ybn, xxa, xxb, yya, yyb: Double;
+  m, p: Integer;
+  xa, xb, ya, yb, s: Array [0..32] of Double;
+begin
+  prog := 30;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniBoommc.Caption;
+  xFac := pbMain.Width / 6;
+  yFac := -pbMain.Height / 4.5;
+  xOff := pbMain.Width div 2;
+  //xOff := 100;
+  yOff := pbMain.Height div 2;
+  eps := 0.01; // drempelwaarde
+  p := 32;
+  // initialisatie
+  alfa := pi / 3;
+  beta := pi / 4; // hoek links en rechts
+  ca := 0.7;
+  cb := 0.7; // contractie links en rechts
+  a1 := Cos(alfa);
+  b1 := Sin(alfa);
+  a2 := Cos(beta);
+  b2 := Sin(beta);
+  xxa := 0;
+  yya := -1;
+  xxb := 0;
+  yyb := 0;
+  g := 0;
+  m := 0;
+  with pbMain.Canvas do
+  begin
+    Line(xOff,Round(yOff-yFac),xOff,yOff);
+    while m >= 0 do
+    begin
+      diff := Abs(xxb - xxa) + Abs(yyb - yya);
+      if (g < p) and (diff > eps) then
+      begin
+        m := m + 1;
+        g := g + 1;
+        s[m] := g; // opstapel
+        u := xxb - xxa;
+        v := yyb - yya;
+        xan := xxb;
+        yan := yyb;
+        xbn := xxb + ca * (a2 * u - b1 * v);
+        ybn := yyb + ca * (b1 * u + a1 * v);
+        xa[m] := xxb;
+        ya[m] := yyb;
+        xb[m] := xxb + cb * (a2 * u + b2 * v);
+        yb[m] := yyb + cb * (-b2 * u + a2 * v);
+        Line(Round(xOff+xFac*xxa),Round(yOff+yFac*yya),Round(xOff+xFac*xxb),Round(yOff+yFac*yyb));
+        xxa := xan;
+        yya := yan;
+        xxb := xbn;
+        yyb := ybn;
+      end
+      else
+      begin
+        xxa := xa[m];
+        yya := ya[m];
+        xxb := xb[m];
+        yyb := yb[m];
+        g := s[m];
+        m := m - 1; // van stapel
+      end; //if
+    end; //while
+  end; //with
+end;
+
+procedure TfrmMain.mniBoommcClick(Sender: TObject);
+var
+  a, b, c, d, det1, det2, q, r, x, x1, y, y1: Double;
+  n, nmax: Integer;
+begin
+  prog := 29;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniBoommc.Caption;
+  xFac := pbMain.Width / 6;
+  yFac := -pbMain.Height / 6;
+  xOff := pbMain.Width div 2;
+  //xOff := 100;
+  yOff := pbMain.Height div 2;
+  // coefficienten
+  a := 0.5;
+  b := 0.5;
+  c := 0.5;
+  d := -0.5;
+  Randomize;
+  nmax := 60000;
+  det1 := a * a + b * b;
+  det2 := c * c + d * d;
+  q := det1 / (det1 + det2);
+  x := 1;
+  y := 0;
+  n := 0; // start
+  while n < nmax do
+  begin
+    r := Random;
+    if r < q then
+    begin
+      x1 := a * x - b * y - 1;
+      y1 := b * x + a * y + b;
+    end
+    else
+    begin
+      x1 := c * x - d * y + 1;
+      y1 := d * x + c * y - d;
+    end; // if
+    x := x1;
+    y := y1;
+    pbMain.Canvas.Pixels[Round(xOff+xFac*x),Round(yOff+yFac*y)] := clLime;
+    n := n + 1;
+  end; // while
 end;
 
 procedure TfrmMain.mniMoireS2Click(Sender: TObject);
