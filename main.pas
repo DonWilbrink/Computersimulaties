@@ -13,6 +13,7 @@ type
   { TfrmMain }
 
   TfrmMain = class(TForm)
+    mniVaren: TMenuItem;
     mniBoombt: TMenuItem;
     mniBoommc: TMenuItem;
     mniHoofdstuk6: TMenuItem;
@@ -91,6 +92,7 @@ type
     procedure mniPotveld4Click(Sender: TObject);
     procedure mniPriemClick(Sender: TObject);
     procedure mniPythkleedClick(Sender: TObject);
+    procedure mniVarenClick(Sender: TObject);
     procedure mniZwevingClick(Sender: TObject);
     procedure seParameter1Change(Sender: TObject);
     procedure seParameter2Change(Sender: TObject);
@@ -183,6 +185,62 @@ begin
         Inc(n);
       end;
     end;
+  end;
+end;
+
+procedure TfrmMain.mniVarenClick(Sender: TObject);
+var
+  a2, a3, a4, b2, b3, b4, c2, c3, c4, d1, d2, d3, d4, f2, f3, f4, q1, q2, q3, r, x, y, z: Double;
+  n, nmax: Integer;
+begin
+  prog := 31;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniVaren.Caption;
+  xFac := -pbMain.Width / 11;
+  yFac := pbMain.Height / 11;
+  xOff := pbMain.Width div 2;
+  //xOff := 100;
+  yOff := 0;
+  nmax := 40000;
+  d1 := 0.16;
+  a2 := 0.85; b2 := 0.04; c2 := -0.04; d2 := 0.85; f2 := 1.6;
+  a3 := 0.2; b3 := -0.26; c3 := 0.23; d3 := 0.22; f3 := 1.6;
+  a4 := -0.15; b4 := 0.28; c4 := 0.26; d4 := 0.24; f4 := 0.44;
+  // waarschijnlijkheidsverdeling
+  q1 := 0.01; q2 := 0.86; q3 := 0.93;
+  x := 0;
+  y := 0;
+  n := 0; //start
+  while n < nmax do
+  begin
+    r := Random;
+    if r < q1 then
+    begin
+      x := 0;
+      y := d1 * y
+    end
+    else
+    if r <= q2 then
+    begin
+      z := x;
+      x := a2 * x + b2 * y;
+      y := c2 * z + d2 * y + f2;
+    end
+    else
+    if r <= q3 then
+    begin
+      z := x;
+      x := a3 * x + b3 * y;
+      y := c3 * z + d3 * y + f3;
+    end
+    else
+    begin
+      z := x;
+      x := a4 * x + b4 * y;
+      y := c4 * z + d4 * y + f4;
+    end;
+    pbMain.Canvas.Pixels[Round(yOff+yFac*y),Round(xOff+xFac*x)] := clLime;
+    n := n + 1;
   end;
 end;
 

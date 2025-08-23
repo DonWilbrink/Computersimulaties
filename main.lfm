@@ -229,6 +229,10 @@ object frmMain: TfrmMain
           Caption = 'Kale Pythagoras boom'
           OnClick = mniBoombtClick
         end
+        object mniVaren: TMenuItem
+          Caption = 'Varenblad volgens Barnsley'
+          OnClick = mniVarenClick
+        end
       end
     end
   end
