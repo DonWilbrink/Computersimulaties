@@ -13,6 +13,9 @@ type
   { TfrmMain }
 
   TfrmMain = class(TForm)
+    mniArtblok: TMenuItem;
+    mniMondrian: TMenuItem;
+    mniHoofdstuk7: TMenuItem;
     mniVaren: TMenuItem;
     mniBoombt: TMenuItem;
     mniBoommc: TMenuItem;
@@ -63,6 +66,7 @@ type
     seParameter3: TSpinEdit;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure mniArtblokClick(Sender: TObject);
     procedure mniBoombtClick(Sender: TObject);
     procedure mniBoommcClick(Sender: TObject);
     procedure mniMoireS2Click(Sender: TObject);
@@ -82,6 +86,7 @@ type
     procedure mniMoireS1Click(Sender: TObject);
     procedure mniMoireS3Click(Sender: TObject);
     procedure mniMoireS4Click(Sender: TObject);
+    procedure mniMondrianClick(Sender: TObject);
     procedure mniPatroon1Click(Sender: TObject);
     procedure mniPatroon2Click(Sender: TObject);
     procedure mniPatroon3Click(Sender: TObject);
@@ -116,6 +121,25 @@ var
      TColor($555555),TColor($FF5555),TColor($55FF55),TColor($FFFF55),
      TColor($5555FF),TColor($FF55FF),TColor($55FFFF),TColor($FFFFFF));
 
+  // EGA palette colors      NB TColor($BB GG RR) !!!
+  EGApal : array[0..63] of TColor = (
+  TColor($000000),TColor($AA0000),TColor($00AA00),TColor($AAAA00),
+  TColor($0000AA),TColor($AA00AA),TColor($00AAAA),TColor($AAAAAA),
+  TColor($550000),TColor($FF0000),TColor($55AA00),TColor($FFAA00),
+  TColor($5500AA),TColor($FF00AA),TColor($55AAAA),TColor($FFAAAA),
+  TColor($005500),TColor($AA5500),TColor($00FF00),TColor($AAFF00),
+  TColor($0055AA),TColor($AA55AA),TColor($00FFAA),TColor($AAFFAA),
+  TColor($555500),TColor($FF5500),TColor($55FF00),TColor($FFFF00),
+  TColor($5555AA),TColor($FF55AA),TColor($55FFAA),TColor($FFFFAA),
+  TColor($000055),TColor($AA0055),TColor($00AA55),TColor($AAAA55),
+  TColor($0000FF),TColor($AA00FF),TColor($00AAFF),TColor($AAAAFF),
+  TColor($550055),TColor($FF0055),TColor($55AA55),TColor($FFAA55),
+  TColor($5500FF),TColor($FF00FF),TColor($55AAFF),TColor($FFAAFF),
+  TColor($005555),TColor($AA5555),TColor($00FF55),TColor($AAFF55),
+  TColor($0055FF),TColor($AA55FF),TColor($00FFFF),TColor($AAFFFF),
+  TColor($555555),TColor($FF5555),TColor($55FF55),TColor($FFFF55),
+  TColor($5555FF),TColor($FF55FF),TColor($55FFFF),TColor($FFFFFF)
+  );
 
 
 implementation
@@ -1034,6 +1058,41 @@ begin
   end;
 end;
 
+procedure TfrmMain.mniMondrianClick(Sender: TObject);
+var
+  h, k, n: Integer;
+  u1, u2, u3, u4, v, v1, v2, v3, v4, x, y: Double;
+begin
+  prog := 32;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniMondrian.Caption;
+  xFac := pbMain.Width / 1.3;
+  yFac := pbMain.Height / 1.3;
+  xOff := pbMain.Width div 7;
+  //xOff := 250;
+  yOff := pbMain.Height div 7;
+  n := 100;
+  h := 8; // aantal lijntjes en lengte
+  for k := 1 to n do
+  begin
+    v := h * (1 - Sqrt(Random)) / 50;
+    x := Random;
+    y := Random;
+    u1 := x - v;
+    v1 := y;
+    u2 := x + v;
+    v2 := y;
+    u3 := x;
+    v3 := y - v;
+    u4 := x;
+    v4 := y + v;
+    if Random < 0.5 then
+      pbMain.Canvas.Line(Round(xOff+xFac*u1),Round(yOff+yFac*v1),Round(xOff+xFac*u2),Round(yOff+yFac*v2))
+    else
+      pbMain.Canvas.Line(Round(xOff+xFac*u3),Round(yOff+yFac*v3),Round(xOff+xFac*u4),Round(yOff+yFac*v4));
+  end; // for k
+end;
+
 procedure TfrmMain.mniPatroon1Click(Sender: TObject);
 var
   c, i, j, n, xm, ym: Integer;
@@ -1366,12 +1425,53 @@ end;
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   pbClear;
+  Randomize;
 end;
 
 procedure TfrmMain.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   flag := Key = VK_ESCAPE;
+end;
+
+procedure TfrmMain.mniArtblokClick(Sender: TObject);
+var
+  i, j, k, l, m, nmax, Numcol: Integer;
+  a, p, q, x1, x2, y1, y2: Double;
+  Col: Array [0..63] of Integer;
+begin
+  prog := 33;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniArtblok.Caption;
+  xFac := pbMain.Width / 1.3;
+  yFac := pbMain.Height / 1.3;
+  xOff := pbMain.Width div 11;
+  //xOff := 0;
+  //yOff := 0;
+  yOff := pbMain.Height div 11;
+  m := 16; // m*m blokken
+  q := 0.9; // vullingsgraad
+  a := 1.3;
+  p := a / (2 * m); // grootte blokken
+  Numcol := 63;
+  for i := 0 to Numcol do
+    Col[i] := i;
+  nmax := Round(m * m * Abs(Ln(1 - q)));
+  pbMain.Canvas.Rectangle(Round(xOff+xFac*(1/m-2*p)),Round(yOff+yFac*(1/m-2*p)),Round(xOff+xFac*(1+2*p)),Round(yOff+yFac*(1+2*p)));
+  for k := 0 to nmax do
+  begin
+    i := 1 + Round(m * Random);
+    j := 1 + Round(m * Random);
+    l := 1 + Round(100 * Random) mod Numcol;
+    x1 := i / m - p;
+    y1 := j / m - p;
+    x2 := i / m + p;
+    y2 := j / m + p;
+    pbMain.Canvas.Brush.Color := EgaPal[Col[l]];
+    pbMain.Canvas.Pen.Color := EgaPal[Col[l]];
+    pbMain.Canvas.Rectangle(Round(xOff+xFac*x1-13),Round(yOff+yFac*y1-13),Round(xOff+xFac*x2-13),Round(yOff+yFac*y2-13));
+  end; // for k
+
 end;
 
 procedure TfrmMain.mniBoombtClick(Sender: TObject);
@@ -1463,7 +1563,6 @@ begin
   b := 0.5;
   c := 0.5;
   d := -0.5;
-  Randomize;
   nmax := 60000;
   det1 := a * a + b * b;
   det2 := c * c + d * d;

@@ -234,6 +234,17 @@ object frmMain: TfrmMain
           OnClick = mniVarenClick
         end
       end
+      object mniHoofdstuk7: TMenuItem
+        Caption = 'Hoofdstuk 7'
+        object mniMondrian: TMenuItem
+          Caption = 'Moderne kunst'
+          OnClick = mniMondrianClick
+        end
+        object mniArtblok: TMenuItem
+          Caption = 'Moderne kunst 2'
+          OnClick = mniArtblokClick
+        end
+      end
     end
   end
 end
