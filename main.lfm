@@ -87,6 +87,15 @@ object frmMain: TfrmMain
       end
     end
   end
+  object btnTeken: TButton
+    Left = 680
+    Height = 31
+    Top = 520
+    Width = 94
+    Caption = 'Herteken'
+    TabOrder = 1
+    OnClick = btnTekenClick
+  end
   object Hoofdminu: TMainMenu
     Left = 840
     Top = 16
@@ -243,6 +252,10 @@ object frmMain: TfrmMain
         object mniArtblok: TMenuItem
           Caption = 'Moderne kunst 2'
           OnClick = mniArtblokClick
+        end
+        object mniKlee: TMenuItem
+          Caption = 'Moderne kunst 3'
+          OnClick = mniKleeClick
         end
       end
     end

@@ -13,6 +13,8 @@ type
   { TfrmMain }
 
   TfrmMain = class(TForm)
+    btnTeken: TButton;
+    mniKlee: TMenuItem;
     mniArtblok: TMenuItem;
     mniMondrian: TMenuItem;
     mniHoofdstuk7: TMenuItem;
@@ -64,11 +66,13 @@ type
     seParameter1: TSpinEdit;
     seParameter2: TFloatSpinEdit;
     seParameter3: TSpinEdit;
+    procedure btnTekenClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure mniArtblokClick(Sender: TObject);
     procedure mniBoombtClick(Sender: TObject);
     procedure mniBoommcClick(Sender: TObject);
+    procedure mniKleeClick(Sender: TObject);
     procedure mniMoireS2Click(Sender: TObject);
     procedure mniGaussClick(Sender: TObject);
     procedure mniHekClick(Sender: TObject);
@@ -1065,6 +1069,7 @@ var
 begin
   prog := 32;
   pbClear;
+  btnTeken.Visible := True;
   frmMain.Caption := 'Computer simulaties: ' + mniMondrian.Caption;
   xFac := pbMain.Width / 1.3;
   yFac := pbMain.Height / 1.3;
@@ -1428,6 +1433,15 @@ begin
   Randomize;
 end;
 
+procedure TfrmMain.btnTekenClick(Sender: TObject);
+begin
+  case Prog of
+  32: mniMondrianClick(Sender);
+  33: mniArtblokClick(Sender);
+  34: mniKleeClick(Sender);
+  end;
+end;
+
 procedure TfrmMain.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -1442,6 +1456,7 @@ var
 begin
   prog := 33;
   pbClear;
+  btnTeken.Visible := True;
   frmMain.Caption := 'Computer simulaties: ' + mniArtblok.Caption;
   xFac := pbMain.Width / 1.3;
   yFac := pbMain.Height / 1.3;
@@ -1590,6 +1605,80 @@ begin
   end; // while
 end;
 
+procedure TfrmMain.mniKleeClick(Sender: TObject);
+var
+  c, k, n: Integer;
+  Alfa, a, a1, a2, a3, b, b1, b2, b3, h, u1, u2, u3, v, v1, v2, v3, x , y: Double;
+
+  procedure Lijn;
+  begin
+    Alfa := Random * Pi;
+    a := Cos(Alfa);
+    b := Sin(Alfa);
+    c := 9 + Round(4 * Random);
+    u1 := x - a * v;
+    v1 := y - b * v;
+    u2 := x + a * v;
+    v2 := y + b * v;
+    pbMain.Canvas.Pen.Color := EgaColor[c];
+    pbMain.Canvas.Line(Round(xOff+xFac*u1),Round(yOff+yFac*v1),Round(xOff+xFac*u2),Round(yOff+yFac*v2));
+  end;
+
+  procedure Driehoek;
+  begin
+    Alfa := 2 * Random * Pi;
+    c := 1 + Round(4 * Random);
+    a1 := Cos(Alfa);
+    a2 := Cos(Alfa + 2 * Pi / 3);
+    a3 := Cos(Alfa - 2 * Pi / 3);
+    b1 := Sin(Alfa);
+    b2 := Sin(Alfa + 2 * Pi / 3);
+    b3 := Sin(Alfa - 2 * Pi / 3);
+    u1 := x + a1 * v;
+    u2 := x + a2 * v;
+    u3 := x + a3 * v;
+    v1 := y + b1 * v;
+    v2 := y + b2 * v;
+    v3 := y + b3 * v;
+    pbMain.Canvas.Pen.Color := EgaColor[c];
+    pbMain.Canvas.Line(Round(xOff+xFac*u1),Round(yOff+yFac*v1),Round(xOff+xFac*u2),Round(yOff+yFac*v2));
+    pbMain.Canvas.LineTo(Round(xOff+xFac*u3),Round(yOff+yFac*v3));
+    pbMain.Canvas.LineTo(Round(xOff+xFac*u1),Round(yOff+yFac*v1));
+    u1 := x + 0.8 * a1 * v;
+    u2 := x + 0.8 * a2 * v;
+    u3 := x + 0.8 * a3 * v;
+    v1 := y + 0.8 * b1 * v;
+    v2 := y + 0.8 * b2 * v;
+    v3 := y + 0.8 * b3 * v;
+    pbMain.Canvas.Brush.Color := EgaColor[c];
+    pbMain.Canvas.FloodFill(Round(xOff+xFac*u1),Round(yOff+yFac*v1),EgaColor[c],fsBorder);
+    pbMain.Canvas.FloodFill(Round(xOff+xFac*u2),Round(yOff+yFac*v2),EgaColor[c],fsBorder);
+    pbMain.Canvas.FloodFill(Round(xOff+xFac*u3),Round(yOff+yFac*v3),EgaColor[c],fsBorder);
+  end;
+
+begin
+  prog := 34;
+  pbClear;
+  btnTeken.Visible := True;
+  frmMain.Caption := 'Computer simulaties: ' + mniKlee.Caption;
+  xFac := pbMain.Width / 1.3;
+  yFac := pbMain.Height / 1.3;
+  xOff := pbMain.Width div 9;
+  //xOff := 0;
+  //yOff := 0;
+  yOff := pbMain.Height div 9;
+  n := 40;  // aantal figuurtjes
+  h := 0.05;
+  pbMain.Canvas.Rectangle(Round(xOff+xFac*(-2*h)),Round(yOff+yFac*(-2*h)),Round(xOff+xFac*(1+2*h)),Round(yOff+yFac*(1+2*h)));
+  for k := 1 to n do
+  begin
+    v := h * (0.5 + Random); // random grootte
+    x := Random;
+    y := Random;
+    if Random < 0.5 then Lijn else Driehoek;
+  end; // for k
+end;
+
 procedure TfrmMain.mniMoireS2Click(Sender: TObject);
 var
   i, x, x0, y, y0: Integer;
@@ -1625,6 +1714,7 @@ begin
   seParameter2.Visible := False;
   seParameter3.Visible := False;
   seParameter4.Visible := False;
+  btnTeken.Visible := False;
 end;
 
 procedure TfrmMain.Cirkel(x, y: Integer; r: Double);
