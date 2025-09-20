@@ -8,6 +8,7 @@ object frmMain: TfrmMain
   ClientWidth = 958
   DesignTimePPI = 120
   Menu = Hoofdminu
+  LCLVersion = '4.2.0.0'
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   object pbMain: TPaintBox
@@ -97,7 +98,7 @@ object frmMain: TfrmMain
     OnClick = btnTekenClick
   end
   object Hoofdminu: TMainMenu
-    Left = 840
+    Left = 832
     Top = 16
     object mniHoofdstukken: TMenuItem
       Caption = 'Hoofdstukken'
@@ -256,6 +257,14 @@ object frmMain: TfrmMain
         object mniKlee: TMenuItem
           Caption = 'Moderne kunst 3'
           OnClick = mniKleeClick
+        end
+        object mniEi: TMenuItem
+          Caption = 'De vorm van een ei'
+          OnClick = mniEiClick
+        end
+        object mniBlokei: TMenuItem
+          Caption = 'Gekleurd paasei'
+          OnClick = mniBlokeiClick
         end
       end
     end

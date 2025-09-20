@@ -14,6 +14,8 @@ type
 
   TfrmMain = class(TForm)
     btnTeken: TButton;
+    mniBlokei: TMenuItem;
+    mniEi: TMenuItem;
     mniKlee: TMenuItem;
     mniArtblok: TMenuItem;
     mniMondrian: TMenuItem;
@@ -70,8 +72,10 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure mniArtblokClick(Sender: TObject);
+    procedure mniBlokeiClick(Sender: TObject);
     procedure mniBoombtClick(Sender: TObject);
     procedure mniBoommcClick(Sender: TObject);
+    procedure mniEiClick(Sender: TObject);
     procedure mniKleeClick(Sender: TObject);
     procedure mniMoireS2Click(Sender: TObject);
     procedure mniGaussClick(Sender: TObject);
@@ -1439,6 +1443,7 @@ begin
   32: mniMondrianClick(Sender);
   33: mniArtblokClick(Sender);
   34: mniKleeClick(Sender);
+  36: mniBlokeiClick(Sender);
   end;
 end;
 
@@ -1487,6 +1492,81 @@ begin
     pbMain.Canvas.Rectangle(Round(xOff+xFac*x1-13),Round(yOff+yFac*y1-13),Round(xOff+xFac*x2-13),Round(yOff+yFac*y2-13));
   end; // for k
 
+end;
+
+procedure TfrmMain.mniBlokeiClick(Sender: TObject);
+var
+  c, i, j, nh, nhor, nv, nver, numcol, p: Integer;
+  a, x0, y0: Double;
+
+  procedure Trafo;
+  var
+    k: Integer;
+    x, y, z: Double;
+  begin
+    for k := 0 to 200 do
+    begin
+      x := x0 - 1 / nh;
+      y := y0 - 1 / nv + k / (nv * 100);
+      z := a * Sqrt(1 - x * x) * Sin(Pi * y / 2);
+      if k = 0 then
+        pbMain.Canvas.MoveTo(Round(xOff+xFac*x),Round(yOff+yFac*z))
+      else
+        pbMain.Canvas.LineTo(Round(xOff+xFac*x),Round(yOff+yFac*z));
+    end; // for k
+    for k := 0 to 200 do
+    begin
+      y := y0 + 1 / nv;
+      x := x0 - 1 / nh + k / (nh * 100);
+      pbMain.Canvas.LineTo(Round(xOff+xFac*x),Round(yOff+yFac*(a*Sqrt(1-x*x)*Sin(Pi*y/2))));
+    end; // for k
+    for k := 0 to 200 do
+    begin
+      x := x0 + 1 / nh;
+      y := y0 + 1 / nv - k / (nv * 100);
+      pbMain.Canvas.LineTo(Round(xOff+xFac*x),Round(yOff+yFac*(a*Sqrt(1-x*x)*Sin(Pi*y/2))));
+    end; // for k
+    for k := 0 to 200 do
+    begin
+      y := y0 - 1 / nv;
+      x := x0 + 1 / nh - k / (nh * 100);
+      pbMain.Canvas.LineTo(Round(xOff+xFac*x),Round(yOff+yFac*(a*Sqrt(1-x*x)*Sin(Pi*y/2))));
+    end; // for k
+  end;
+
+begin
+  prog := 36;
+  pbClear;
+  btnTeken.Visible := True;
+  frmMain.Caption := 'Computer simulaties: ' + mniBlokei.Caption;
+  xFac := pbMain.Width / 2;
+  yFac := pbMain.Height / 2;
+  xOff := pbMain.Width div 2;
+  //xOff := 0;
+  //yOff := 0;
+  yOff := pbMain.Height div 2;
+  numcol := 12; // aantal kleuren
+  p := 100; // kleurparameter
+  a := 0.8; // verticale verkorting
+  nhor := 4;
+  nver := 3;
+  nh := 2 * nhor + 1;
+  nv := 2 * nver + 1;
+  for i := -nhor to nhor do
+  begin
+    for j := -nver to nver do
+    begin
+      x0 := 2 * i / nh;
+      y0 := 2 * j / nv;
+      c := 1 + Round(p*Random) mod numcol;
+      pbMain.Canvas.Pen.Color := EgaColor[c];
+      Trafo;
+      pbMain.Canvas.Brush.Color := EgaColor[c];
+      //pbMain.Canvas.FloodFill(Round(xOff+xFac*x0),Round(yOff+yFac*(a*Sqrt(1-x0*x0)*Sin(Pi*y0/2))),EgaColor[c],fsBorder);
+      pbMain.Canvas.FloodFill(Round(xOff+xFac*x0),Round(yOff+yFac*(a*Sqrt(1-x0*x0)*Sin(Pi*y0/2))),clBlack,fsSurface);
+      //pbMain.Canvas.Pixels[Round(xOff+xFac*x0),Round(yOff+yFac*(a*Sqrt(1-x0*x0)*Sin(Pi*y0/2)))] := EgaColor[c];
+    end; // for j
+  end; // for i
 end;
 
 procedure TfrmMain.mniBoombtClick(Sender: TObject);
@@ -1603,6 +1683,44 @@ begin
     pbMain.Canvas.Pixels[Round(xOff+xFac*x),Round(yOff+yFac*y)] := clLime;
     n := n + 1;
   end; // while
+end;
+
+procedure TfrmMain.mniEiClick(Sender: TObject);
+var
+  a, b, c, x, y, z: Double;
+  i, k: Integer;
+begin
+  prog := 35;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniEi.Caption;
+  xFac := pbMain.Width / 2;
+  yFac := pbMain.Height / 2;
+  xOff := pbMain.Width div 2;
+  //xOff := 0;
+  //yOff := 0;
+  yOff := pbMain.Height div 2;
+  a := 0.7;
+  b := 0.2; // ei parameters
+  for k := 0 to 10 do
+  begin
+    c := 1 - k / 12;
+    pbMain.Canvas.MoveTo(Round(xOff+xFac*-c),yOff);
+    for i := -200 to 200 do
+    begin
+      x := i / 200;
+      z := (1 - x * x) * (1 + b * x);
+      y := a * Sqrt(z);
+      pbMain.Canvas.LineTo(Round(xOff+xFac*(c*x)),Round(yOff+yFac*(c*y)));
+    end; // for i
+    pbMain.Canvas.MoveTo(Round(xOff+xFac*-c),yOff);
+    for i := -200 to 200 do
+    begin
+      x := i / 200;
+      z := (1 - x * x) * (1 + b * x);
+      y := a * Sqrt(z);
+      pbMain.Canvas.LineTo(Round(xOff+xFac*(c*x)),Round(yOff+yFac*(-c*y)));
+    end; // for i
+  end; // for k
 end;
 
 procedure TfrmMain.mniKleeClick(Sender: TObject);
