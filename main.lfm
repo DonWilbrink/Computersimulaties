@@ -7,10 +7,11 @@ object frmMain: TfrmMain
   ClientHeight = 696
   ClientWidth = 958
   DesignTimePPI = 120
+  KeyPreview = True
   Menu = Hoofdminu
-  LCLVersion = '4.2.0.0'
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
+  OnKeyPress = FormKeyPress
   object pbMain: TPaintBox
     Left = 32
     Height = 600
@@ -265,6 +266,17 @@ object frmMain: TfrmMain
         object mniBlokei: TMenuItem
           Caption = 'Gekleurd paasei'
           OnClick = mniBlokeiClick
+        end
+        object mniPaasei: TMenuItem
+          Caption = 'Een eivormige aantrekker van een dynamisch systeem'
+          OnClick = mniPaaseiClick
+        end
+      end
+      object mniHoofdstuk8: TMenuItem
+        Caption = 'Hoofdstuk 8'
+        object mniTurtle: TMenuItem
+          Caption = 'Turtlegraphics, stap voor stap'
+          OnClick = mniTurtleClick
         end
       end
     end

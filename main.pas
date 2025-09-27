@@ -14,6 +14,9 @@ type
 
   TfrmMain = class(TForm)
     btnTeken: TButton;
+    mniTurtle: TMenuItem;
+    mniHoofdstuk8: TMenuItem;
+    mniPaasei: TMenuItem;
     mniBlokei: TMenuItem;
     mniEi: TMenuItem;
     mniKlee: TMenuItem;
@@ -71,6 +74,7 @@ type
     procedure btnTekenClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormKeyPress(Sender: TObject; var Key: char);
     procedure mniArtblokClick(Sender: TObject);
     procedure mniBlokeiClick(Sender: TObject);
     procedure mniBoombtClick(Sender: TObject);
@@ -95,6 +99,7 @@ type
     procedure mniMoireS3Click(Sender: TObject);
     procedure mniMoireS4Click(Sender: TObject);
     procedure mniMondrianClick(Sender: TObject);
+    procedure mniPaaseiClick(Sender: TObject);
     procedure mniPatroon1Click(Sender: TObject);
     procedure mniPatroon2Click(Sender: TObject);
     procedure mniPatroon3Click(Sender: TObject);
@@ -105,6 +110,7 @@ type
     procedure mniPotveld4Click(Sender: TObject);
     procedure mniPriemClick(Sender: TObject);
     procedure mniPythkleedClick(Sender: TObject);
+    procedure mniTurtleClick(Sender: TObject);
     procedure mniVarenClick(Sender: TObject);
     procedure mniZwevingClick(Sender: TObject);
     procedure seParameter1Change(Sender: TObject);
@@ -123,6 +129,7 @@ var
   prog, xOff, yOff: Integer;
   xFac, yFac: Double;
   flag: Boolean;
+  turtlekey: Char;
   EgaColor : array[0..15] of TColor =
     (TColor($000000),TColor($AA0000),TColor($00AA00),TColor($AAAA00),
      TColor($0000AA),TColor($AA00AA),TColor($0055AA),TColor($AAAAAA),
@@ -179,6 +186,7 @@ var
   end;
 
 begin
+  Sender := Sender;
   prog := 1;
   pbClear;
   frmMain.Caption := 'Computer simulaties: pythagoraskleed';
@@ -220,11 +228,59 @@ begin
   end;
 end;
 
+procedure TfrmMain.mniTurtleClick(Sender: TObject);
+var
+  h, p, p1, q, q1, x, xm, y, ym: Integer;
+begin
+  Sender := Sender;
+  prog := 38;
+  pbClear;
+  //btnTeken.Visible := True;
+  frmMain.Caption := 'Computer simulaties: ' + mniTurtle.Caption;
+  xm := pbMain.Width div 2;
+  ym := pbMain.Height div 2;
+  h := 10;
+  x := xm;
+  y := ym;
+  p := 1;
+  q := 0;
+  pbMain.Canvas.MoveTo(x,y);
+  Repeat
+    Application.ProcessMessages;
+    case turtlekey of
+    'F', 'f':
+      begin
+        x := x + h * p;
+        y := y + h * q;
+        pbMain.Canvas.LineTo(x,y);
+        turtlekey := #0;
+      end;
+    '+':
+      begin
+        p1 := q;
+        q1 := -p;
+        p := p1;
+        q := q1;
+        turtlekey := #0;
+      end;
+    '-':
+      begin
+        p1 := -q;
+        q1 := p;
+        p := p1;
+        q := q1;
+        turtlekey := #0;
+      end;
+    end;
+  until (turtlekey = 'X') or (turtlekey = 'x');
+end;
+
 procedure TfrmMain.mniVarenClick(Sender: TObject);
 var
   a2, a3, a4, b2, b3, b4, c2, c3, c4, d1, d2, d3, d4, f2, f3, f4, q1, q2, q3, r, x, y, z: Double;
   n, nmax: Integer;
 begin
+  Sender := Sender;
   prog := 31;
   pbClear;
   frmMain.Caption := 'Computer simulaties: ' + mniVaren.Caption;
@@ -281,6 +337,7 @@ var
   s1, s2: Integer;
   t, y1, y2: Double;
 begin
+  Sender := Sender;
   prog := 15;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Zwevingen van golven';
@@ -306,6 +363,7 @@ end;
 
 procedure TfrmMain.seParameter1Change(Sender: TObject);
 begin
+  Sender := Sender;
   case prog of
   4:
     begin
@@ -328,6 +386,7 @@ end;
 
 procedure TfrmMain.seParameter2Change(Sender: TObject);
 begin
+  Sender := Sender;
   case prog of
   4: mniLissa1Click(Sender);
   5: mniLissa2Click(Sender);
@@ -338,6 +397,7 @@ end;
 
 procedure TfrmMain.seParameter3Change(Sender: TObject);
 begin
+  Sender := Sender;
   case prog of
   5: mniLissa2Click(Sender);
   end;
@@ -345,6 +405,7 @@ end;
 
 procedure TfrmMain.seParameter4Change(Sender: TObject);
 begin
+  Sender := Sender;
   case prog of
   7: mniLissafClick(Sender);
   end;
@@ -352,6 +413,7 @@ end;
 
 procedure TfrmMain.mniPriemClick(Sender: TObject);
 begin
+  Sender := Sender;
   prog := 2;
   pbClear;
   frmPriem.ShowModal;
@@ -363,6 +425,7 @@ var
   a, b, f, f1, f2, s: Double;
   WrongNumber: Boolean;
 begin
+  Sender := Sender;
   prog := 3;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Priemgetallenkleedje van Gauss';
@@ -416,6 +479,7 @@ procedure TfrmMain.mniHekClick(Sender: TObject);
 var
   a1, a2, b, h1, h2, i, k, hdiv2: Integer;
 begin
+  Sender := Sender;
   prog := 16;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Zwevingen bij hekken';
@@ -452,6 +516,7 @@ var
   i, j, m, n, xm, ym: Integer;
   x, y, z: Double;
 begin
+  Sender := Sender;
   prog := 8;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Hoogte 1';
@@ -481,6 +546,7 @@ var
   i, j, l, m, n, xm, ym: Integer;
   x, y, z: Double;
 begin
+  Sender := Sender;
   prog := 9;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Hoogte 2';
@@ -599,6 +665,7 @@ var
   end;
 
 begin
+  Sender := Sender;
   prog := 10;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Level lines of z=(x,y) for -1<z<1';
@@ -683,6 +750,7 @@ var
   a, s: Integer;
   f, h, t, x, y: Double;
 begin
+  Sender := Sender;
   prog := 4;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Lissajous krommen';
@@ -731,6 +799,7 @@ var
   Ampl1, Ampl2, Fase, Freq, h, t, x, y: Double;
   k, m, n: Integer;
 begin
+  Sender := Sender;
   prog := 5;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Figuur van Lissajous';
@@ -785,6 +854,7 @@ var
   a: Integer;
   b, h, s, t, x, y: Double;
 begin
+  Sender := Sender;
   prog := 6;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Lissajousachtige krommen';
@@ -833,6 +903,7 @@ var
   s1, s2: Integer;
   a1, a2, h, phi, r, t, x, y: Double;
 begin
+  Sender := Sender;
   prog := 7;
   pbClear;
   frmMain.Caption :=  'Computer simulaties: Lissajousachtige kromme in de vorm van een bloem';
@@ -881,6 +952,7 @@ var
   i, m, r, x, xm, y, ym: Integer;
   h, s: Double;
 begin
+  Sender := Sender;
   prog := 19;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Interferentie evenwijdige lijnen';
@@ -912,6 +984,7 @@ var
   i, m, xm, ym: Integer;
   h, r, s, x, y: Double;
 begin
+  Sender := Sender;
   prog := 20;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Interferentie van cirkelbundels';
@@ -940,6 +1013,7 @@ var
   a, b, x1, x2, y1, y2: Double;
   i, j: Integer;
 begin
+  Sender := Sender;
   prog := 17;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Interferentie evenwijdige lijnen';
@@ -972,6 +1046,7 @@ var
   i: Integer;
   Alfa, c, s, u1, u2, v1, v2, x1, x2, y1, y2: Double;
 begin
+  Sender := Sender;
   prog := 18;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Interferentie evenwijdige lijnen, tweede bundel iets gedraaid';
@@ -998,6 +1073,7 @@ procedure TfrmMain.mniMoireS1Click(Sender: TObject);
 var
   a, i, x1, x2, y1, y2: Integer;
 begin
+  Sender := Sender;
   prog := 21;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Interferentie evenwijdige lijnen met pixelrooster van beeldscherm';
@@ -1017,6 +1093,7 @@ var
   i, r, x, xm, y, ym: Integer;
   h, s: Double;
 begin
+  Sender := Sender;
   prog := 23;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Interferentie van cirkels met pixelrooster van beeldscherm stralen in lineare progressie';
@@ -1042,6 +1119,7 @@ var
   i, max, xm, ym: Integer;
   f, h, r, r1, r2, x, y: Double;
 begin
+  Sender := Sender;
   prog := 24;
   pbClear;
   frmMain.Caption := 'Computer simulaties: ' + mniMoireS4.Caption;
@@ -1071,6 +1149,7 @@ var
   h, k, n: Integer;
   u1, u2, u3, u4, v, v1, v2, v3, v4, x, y: Double;
 begin
+  Sender := Sender;
   prog := 32;
   pbClear;
   btnTeken.Visible := True;
@@ -1102,11 +1181,49 @@ begin
   end; // for k
 end;
 
+procedure TfrmMain.mniPaaseiClick(Sender: TObject);
+var
+  k, n, numcol: Integer;
+  a, b, p, q, s, x, x1, y, y1: Double;
+begin
+  Sender := Sender;
+  prog := 37;
+  pbClear;
+  btnTeken.Visible := True;
+  frmMain.Caption := 'Computer simulaties: ' + mniPaasei.Caption;
+  xFac := pbMain.Width / 0.6;
+  yFac := pbMain.Height / 0.6;
+  xOff := pbMain.Width div 2;
+  //xOff := 0;
+  //yOff := 0;
+  yOff := pbMain.Height div 2;
+  numcol := 63;
+  a := 0.996;
+  b := 0.102;
+  p := 0.05;
+  q := 0.2;
+  x := 0.04;
+  y := 0;
+  for n := 0 to 3000 do
+  begin
+    k := 1 + Random(n mod numcol);
+    pbMain.Canvas.Pen.Color := EGAPal[k];
+    pbMain.Canvas.Brush.Color := EGAPal[k];
+    pbMain.Canvas.EllipseC(Round(xOff+xFac*x),Round(yOff+yFac*y),2,2);
+    s := 1 + p * x * x - q * y;
+    x1 := (a * x - b * y / 0.7) / s;
+    y1 := b * x * 0.7 + a * y;
+    x := x1;
+    y := y1;
+  end;
+end;
+
 procedure TfrmMain.mniPatroon1Click(Sender: TObject);
 var
   c, i, j, n, xm, ym: Integer;
   x, y, z: Double;
 begin
+  Sender := Sender;
   prog := 11;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Vierkant patroon';
@@ -1158,6 +1275,7 @@ var
   end;
 
 begin
+  Sender := Sender;
   prog := 12;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Rechthoekig kruissteekjespatroon';
@@ -1206,6 +1324,7 @@ var
   end;
 
 begin
+  Sender := Sender;
   prog := 13;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Patroon met bergen';
@@ -1232,11 +1351,12 @@ end;
 
 procedure TfrmMain.mniPatroon4Click(Sender: TObject);
 var
-  c, i, j, n1, n2, xm, x1, x2, ym, y1, y2: Integer;
+  c, i, j, n1, n2, xm, ym: Integer;
   x, y, z: Double;
   Col: Array of Integer = (0,1,9,2,10,4,12,6,14); //kleurentabel
   l: TColor;
 begin
+  Sender := Sender;
   prog := 14;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Een rechthoekig patroon';
@@ -1274,6 +1394,7 @@ var
   h, r, phi: Double;
   k: Integer;
 begin
+  Sender := Sender;
   prog := 25;
   pbClear;
   frmMain.Caption := 'Computer simulaties: ' + mniPotveld1.Caption;
@@ -1303,6 +1424,7 @@ var
   k, l: Integer;
   a, b, c, f, h, r: Double;
 begin
+  Sender := Sender;
   prog := 26;
   pbClear;
   frmMain.Caption := 'Computer simulaties: ' + mniPotveld2.Caption;
@@ -1343,6 +1465,7 @@ var
   c, e, h, r, t, x, y: Double;
   i, k, l: Integer;
 begin
+  Sender := Sender;
   prog := 27;
   pbClear;
   frmMain.Caption := 'Computer simulaties: ' + mniPotveld3.Caption;
@@ -1415,6 +1538,7 @@ var
   end;
 
 begin
+  Sender := Sender;
   prog := 28;
   pbClear;
   frmMain.Caption := 'Computer simulaties: ' + mniPotveld4.Caption;
@@ -1433,24 +1557,34 @@ end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
+  Sender := Sender;
   pbClear;
   Randomize;
 end;
 
 procedure TfrmMain.btnTekenClick(Sender: TObject);
 begin
+  Sender := Sender;
   case Prog of
   32: mniMondrianClick(Sender);
   33: mniArtblokClick(Sender);
   34: mniKleeClick(Sender);
   36: mniBlokeiClick(Sender);
+  37: mniPaaseiClick(Sender);
   end;
 end;
 
 procedure TfrmMain.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+  Sender := Sender;
   flag := Key = VK_ESCAPE;
+end;
+
+procedure TfrmMain.FormKeyPress(Sender: TObject; var Key: char);
+begin
+  Sender := Sender;
+  turtlekey := Key;
 end;
 
 procedure TfrmMain.mniArtblokClick(Sender: TObject);
@@ -1459,6 +1593,7 @@ var
   a, p, q, x1, x2, y1, y2: Double;
   Col: Array [0..63] of Integer;
 begin
+  Sender := Sender;
   prog := 33;
   pbClear;
   btnTeken.Visible := True;
@@ -1535,6 +1670,7 @@ var
   end;
 
 begin
+  Sender := Sender;
   prog := 36;
   pbClear;
   btnTeken.Visible := True;
@@ -1575,6 +1711,7 @@ var
   m, p: Integer;
   xa, xb, ya, yb, s: Array [0..32] of Double;
 begin
+  Sender := Sender;
   prog := 30;
   pbClear;
   frmMain.Caption := 'Computer simulaties: ' + mniBoommc.Caption;
@@ -1645,6 +1782,7 @@ var
   a, b, c, d, det1, det2, q, r, x, x1, y, y1: Double;
   n, nmax: Integer;
 begin
+  Sender := Sender;
   prog := 29;
   pbClear;
   frmMain.Caption := 'Computer simulaties: ' + mniBoommc.Caption;
@@ -1690,6 +1828,7 @@ var
   a, b, c, x, y, z: Double;
   i, k: Integer;
 begin
+  Sender := Sender;
   prog := 35;
   pbClear;
   frmMain.Caption := 'Computer simulaties: ' + mniEi.Caption;
@@ -1775,6 +1914,7 @@ var
   end;
 
 begin
+  Sender := Sender;
   prog := 34;
   pbClear;
   btnTeken.Visible := True;
@@ -1801,6 +1941,7 @@ procedure TfrmMain.mniMoireS2Click(Sender: TObject);
 var
   i, x, x0, y, y0: Integer;
 begin
+  Sender := Sender;
   prog := 22;
   pbClear;
   frmMain.Caption := 'Computer simulaties: Interferentie van stralenbundel met pixelrooster van beeldscherm';
