@@ -14,6 +14,7 @@ type
 
   TfrmMain = class(TForm)
     btnTeken: TButton;
+    mniTurtlek: TMenuItem;
     mniTurtle: TMenuItem;
     mniHoofdstuk8: TMenuItem;
     mniPaasei: TMenuItem;
@@ -111,6 +112,7 @@ type
     procedure mniPriemClick(Sender: TObject);
     procedure mniPythkleedClick(Sender: TObject);
     procedure mniTurtleClick(Sender: TObject);
+    procedure mniTurtlekClick(Sender: TObject);
     procedure mniVarenClick(Sender: TObject);
     procedure mniZwevingClick(Sender: TObject);
     procedure seParameter1Change(Sender: TObject);
@@ -273,6 +275,77 @@ begin
       end;
     end;
   until (turtlekey = 'X') or (turtlekey = 'x');
+end;
+
+procedure TfrmMain.mniTurtlekClick(Sender: TObject);
+var
+  nmax, i, n: Integer;
+  x, y, h, a, b, p, qq, p1, q1: Double;
+  axiom, prod, weg, w, s, q: string;
+begin
+  Sender := Sender;
+  prog := 39;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniTurtlek.Caption;
+  xFac := pbMain.Width / 7;
+  yFac := -pbMain.Height / 7;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  //xOff := 100;
+  //yOff := 0;
+  nmax := 4;
+  // beginpositie en staplengte
+  x := -3;
+  y := -0.5;
+  h := 0.075;
+  // axioma en productieregel
+  axiom := 'F';
+  prod := 'F+F--F+F';
+  // vorming van woord
+  weg := axiom;
+  for n := 1 to nmax do
+  begin
+    w := '';
+    for i := 1 to Length(weg) do
+    begin
+      s := Copy(weg,i,1);
+      if s = 'F' then q := prod else q := s;
+      w := w + q;
+    end;
+    weg := w;
+  end;
+  // graphics
+  a := Cos(pi/3);
+  b := Sin(pi/3);
+  p := 1;
+  qq := 0;
+  pbMain.Canvas.MoveTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
+  for i := 1 to Length(weg) do
+  begin
+    s := Copy(weg,i,1);
+    case s of
+    '+':
+      begin
+        p1 := a * p - b * qq;
+        q1 := b * p + a * qq;
+        p := p1;
+        qq := q1;
+      end;
+    '-':
+      begin
+        p1 := a * p + b * qq;
+        q1 := -b * p + a * qq;
+        p := p1;
+        qq := q1;
+      end;
+    'F':
+      begin
+        x := x + h * p;
+        y := y + h * qq;
+        pbMain.Canvas.LineTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
+      end;
+    end;
+  end;
 end;
 
 procedure TfrmMain.mniVarenClick(Sender: TObject);

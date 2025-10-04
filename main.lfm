@@ -278,6 +278,10 @@ object frmMain: TfrmMain
           Caption = 'Turtlegraphics, stap voor stap'
           OnClick = mniTurtleClick
         end
+        object mniTurtlek: TMenuItem
+          Caption = 'De lijn van Von Koch'
+          OnClick = mniTurtlekClick
+        end
       end
     end
   end
