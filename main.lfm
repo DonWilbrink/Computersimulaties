@@ -282,6 +282,14 @@ object frmMain: TfrmMain
           Caption = 'De lijn van Von Koch'
           OnClick = mniTurtlekClick
         end
+        object mniTurtlea: TMenuItem
+          Caption = 'Mandelbrot''s archipel'
+          OnClick = mniTurtleaClick
+        end
+        object mniTurtled: TMenuItem
+          Caption = 'De drakenlijn'
+          OnClick = mniTurtledClick
+        end
       end
     end
   end

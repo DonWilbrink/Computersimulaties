@@ -14,6 +14,8 @@ type
 
   TfrmMain = class(TForm)
     btnTeken: TButton;
+    mniTurtled: TMenuItem;
+    mniTurtlea: TMenuItem;
     mniTurtlek: TMenuItem;
     mniTurtle: TMenuItem;
     mniHoofdstuk8: TMenuItem;
@@ -111,7 +113,9 @@ type
     procedure mniPotveld4Click(Sender: TObject);
     procedure mniPriemClick(Sender: TObject);
     procedure mniPythkleedClick(Sender: TObject);
+    procedure mniTurtleaClick(Sender: TObject);
     procedure mniTurtleClick(Sender: TObject);
+    procedure mniTurtledClick(Sender: TObject);
     procedure mniTurtlekClick(Sender: TObject);
     procedure mniVarenClick(Sender: TObject);
     procedure mniZwevingClick(Sender: TObject);
@@ -230,6 +234,81 @@ begin
   end;
 end;
 
+procedure TfrmMain.mniTurtleaClick(Sender: TObject);
+var
+  nmax, n, i: Integer;
+  x, y, phi, h: Double;
+  axiom, prod1, prod2, weg, w, q, s: string;
+
+begin
+  Sender := Sender;
+  prog := 40;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniTurtlea.Caption;
+  xFac := pbMain.Width / 7;
+  yFac := -pbMain.Height / 7;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  //xOff := 100;
+  //yOff := 0;
+  nmax := 2;
+
+  // beginpositie en staplengte
+  x := -1;
+  y := 1;
+  phi := 0;
+  h := 0.06;
+
+  // axioma en productieregel
+  axiom := 'F-F-F-F';
+  prod1 := 'F-f+FF-F-FF-Ff-FF+f-FF+F+FF+Ff+FFF';
+  prod2 := 'ffffff';
+
+  // vorming van woord
+  weg := axiom;
+  for n := 1 to nmax do
+  begin
+    w := '';
+    for i := 1 to weg.Length do
+    begin
+      s := Copy(weg, i, 1);
+      if s = 'F' then q := prod1;
+      if s = 'f' then q := prod2;
+      if (s = '+') or (s = '-') then q := s;
+      w := w + q;
+    end;
+    weg := w;
+  end;
+
+  // graphics
+  with pbMain.Canvas do
+  begin
+    MoveTo(Round(xOff+xFac*x), Round(yOff+yFac*y));
+    for i := 1 to weg.Length do
+    begin
+      s := Copy(weg,i,1);
+      case s of
+        '+':
+          phi := phi + pi / 2;
+        '-':
+          phi := phi - pi / 2;
+        'F':
+        begin
+          x := x + h * Cos(phi);
+          y := y + h * Sin(phi);
+          LineTo(Round(xOff+xFac*x), Round(yOff+yFac*y));
+        end;
+        'f':
+        begin
+          x := x + h * Cos(phi);
+          y := y + h * Sin(phi);
+          MoveTo(Round(xOff+xFac*x), Round(yOff+yFac*y));
+        end;
+      end;
+    end;
+  end;
+end;
+
 procedure TfrmMain.mniTurtleClick(Sender: TObject);
 var
   h, p, p1, q, q1, x, xm, y, ym: Integer;
@@ -277,6 +356,85 @@ begin
   until (turtlekey = 'X') or (turtlekey = 'x');
 end;
 
+procedure TfrmMain.mniTurtledClick(Sender: TObject);
+var
+  nmax, n, i, p, p1, qq, q1: Integer;
+  x, y, h: Double;
+  axiom, prod1, prod2, weg, w, q, s: string;
+begin
+  Sender := Sender;
+  prog := 41;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniTurtled.Caption;
+  xFac := pbMain.Width / 7;
+  yFac := -pbMain.Height / 7;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  //xOff := 100;
+  //yOff := 0;
+  nmax := 12;
+
+  // beginpositie en staplengte
+  x := 1.5;
+  y := 0.5;
+  h := 0.06;
+
+  // axioma en productieregels
+  axiom := 'F';
+  prod1 := 'F-G';
+  prod2 := 'F+G';
+
+  // vorming van woord
+  weg := axiom;
+  for n := 1 to nmax do
+  begin
+    w := '';
+    for i := 1 to weg.Length do
+    begin
+      s := Copy(weg,i,1);
+      if s = 'F' then q := prod1;
+      if s = 'G' then q := prod2;
+      if (s = '+') or (s = '-') then q := s;
+      w := w + q;
+    end;
+    weg := w;
+  end;
+
+  // graphics
+  p := 1;
+  qq := 0;
+  with pbMain.Canvas do
+  begin
+    Moveto(Round(xOff+xFac*x),Round(yOff+yFac*y));
+    for i := 1 to weg.Length do
+    begin
+      s := Copy(weg,i,1);
+      case s of
+        '+':
+          begin
+            p1 := -qq;
+            q1 := p;
+            p := p1;
+            qq := q1;
+          end;
+        '-':
+          begin
+            p1 := qq;
+            q1 := -p;
+            p := p1;
+            qq := q1;
+          end;
+        'F', 'G':
+          begin
+            x := x + h * p;
+            y := y + h * qq;
+            LineTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
+          end;
+      end;
+    end;
+  end;
+end;
+
 procedure TfrmMain.mniTurtlekClick(Sender: TObject);
 var
   nmax, i, n: Integer;
@@ -306,7 +464,7 @@ begin
   for n := 1 to nmax do
   begin
     w := '';
-    for i := 1 to Length(weg) do
+    for i := 1 to weg.Length do
     begin
       s := Copy(weg,i,1);
       if s = 'F' then q := prod else q := s;
@@ -320,7 +478,7 @@ begin
   p := 1;
   qq := 0;
   pbMain.Canvas.MoveTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
-  for i := 1 to Length(weg) do
+  for i := 1 to weg.Length do
   begin
     s := Copy(weg,i,1);
     case s of
