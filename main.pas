@@ -14,6 +14,9 @@ type
 
   TfrmMain = class(TForm)
     btnTeken: TButton;
+    mniPeanob: TMenuItem;
+    mniPeano: TMenuItem;
+    mniHoofdstuk9: TMenuItem;
     mniTurtled: TMenuItem;
     mniTurtlea: TMenuItem;
     mniTurtlek: TMenuItem;
@@ -107,6 +110,8 @@ type
     procedure mniPatroon2Click(Sender: TObject);
     procedure mniPatroon3Click(Sender: TObject);
     procedure mniPatroon4Click(Sender: TObject);
+    procedure mniPeanobClick(Sender: TObject);
+    procedure mniPeanoClick(Sender: TObject);
     procedure mniPotveld1Click(Sender: TObject);
     procedure mniPotveld2Click(Sender: TObject);
     procedure mniPotveld3Click(Sender: TObject);
@@ -354,6 +359,7 @@ begin
       end;
     end;
   until (turtlekey = 'X') or (turtlekey = 'x');
+  turtlekey := #0;
 end;
 
 procedure TfrmMain.mniTurtledClick(Sender: TObject);
@@ -1618,6 +1624,184 @@ begin
   x2 := xm + n1 + 10;
   y2 := ym + n2 + 10;
   pbMain.Canvas.Rectangle(x1,y1,x2,y2); }
+end;
+
+procedure TfrmMain.mniPeanobClick(Sender: TObject);
+var
+  i, l, l1, l2, lp, n, s, nmax: Integer;
+  h, x, y, phi: Double;
+  prod1, prod2, m, ss: string;
+  p: Array of string;
+  nn: Array of Integer;
+begin
+  Sender := Sender;
+  prog := 43;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniPeanob.Caption;
+  xFac := pbMain.Width / 5;
+  yFac := -pbMain.Height / 5;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height * 10 div 18;
+  nmax := 6;
+
+  // beginpositie en staplengte
+  x := -2.2;
+  y := 2.5;
+  phi := 0;
+  h := 0.07;
+
+  // axioma en produktieregels
+  // axiom := 'X';
+  prod1 := '-YF+XFX+FY-';
+  prod2 := '+XF-YFY-FX+';
+  l1 := length(prod1);
+  l2 := length(prod2);
+  if l1 > l2 then lp := l1 else lp := l2;
+  SetLength(p,lp*nmax);
+  SetLength(nn,lp*nmax);
+  l := 0;
+
+  // hoofdprogramma
+  s := 1;
+  n := 0;
+  p[l] := 'X';
+  nn[1] := 0;
+  while s > 0 do
+  begin
+    while n < nmax do
+    begin
+      ss := p[s];
+      n := nn[s] + 1;
+      s := s - 1;
+      case ss of
+        'X':
+          begin
+            for i := 0 to lp - 1 do
+            begin
+              m := Copy(prod1,lp-i,1);
+              s := s + 1;
+              p[s] := m;
+              nn[s] := n;
+            end;
+          end;
+        'Y':
+          begin
+            for i := 0 to lp - 1 do
+            begin
+              m := Copy(prod2,lp-i,1);
+              s := s + 1;
+              p[s] := m;
+              nn[s] := n;
+            end;
+          end;
+        'F', '+', '-':
+          begin
+            s := s + 1;
+            p[s] := ss;
+            nn[s] := n;
+          end;
+      end; // case
+    end; // while n
+    ss := p[s];
+    with pbMain.Canvas do
+    begin
+      MoveTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
+      case ss of
+        '+':
+          phi := phi + pi / 2;
+        '-':
+          phi := phi - pi / 2;
+        'F':
+          begin
+            x := x + h * Cos(phi);
+            y := y + h * Sin(phi);
+            LineTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
+          end;
+      end; // case ss
+    end; // with
+    s := s - 1;
+    n := nn[s];
+  end; // end while s
+end;
+
+procedure TfrmMain.mniPeanoClick(Sender: TObject);
+var
+  x, y, phi, h: Double;
+  nmax , n , i: Integer;
+  axiom, prod1, prod2, weg, w, s, q: string;
+begin
+  Sender := Sender;
+  prog := 42;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniPeano.Caption;
+  xFac := pbMain.Width / 90;
+  yFac := -pbMain.Height / 90;
+  xOff := pbMain.Width div 9;
+  yOff := pbMain.Height div 9;
+  //xOff := 100;
+  //yOff := 0;
+  nmax := 7;
+
+  // beginpositie en staplengte
+  x := -2;
+  y := 2;
+  phi := 0;
+  h := 0.6;
+
+  // axioma en productieregels
+  axiom := 'X';
+  prod1 := '-YF+XFX+FY-';
+  prod2 := '+XF-YFY-FX+';
+
+  // hoofdprogramma
+  weg := axiom;
+  for n := 1 to nmax do
+  begin
+    w := '';
+    for i := 1 to weg.Length do
+    begin
+      s := Copy(weg,i,1);
+      case s of
+      'X':
+        begin
+          q := prod1;
+        end;
+      'Y':
+        begin
+          q := prod2;
+        end;
+      else
+        begin
+          q := s;
+        end;
+      end;
+      w := w + q;
+    end;
+    weg := w;
+  end;
+
+  // graphics
+  pbMain.Canvas.MoveTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
+  for i := 1 to weg.Length do
+  begin
+    s := Copy(weg,i,1);
+    case s of
+    '+':
+      begin
+        phi := phi + pi / 2;
+      end;
+    '-':
+      begin
+        phi := phi - pi / 2;
+      end;
+    'F':
+      begin
+        x := x + h * Cos(phi);
+        y := y + h * Sin(phi);
+        pbMain.Canvas.LineTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
+      end;
+    end;
+  end;
 end;
 
 procedure TfrmMain.mniPotveld1Click(Sender: TObject);

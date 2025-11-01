@@ -291,6 +291,17 @@ object frmMain: TfrmMain
           OnClick = mniTurtledClick
         end
       end
+      object mniHoofdstuk9: TMenuItem
+        Caption = 'Hoofdstuk 9'
+        object mniPeano: TMenuItem
+          Caption = 'Peano lijn volgens Hilbert'
+          OnClick = mniPeanoClick
+        end
+        object mniPeanob: TMenuItem
+          Caption = 'Peano lijn volgens Hilbert, backtrack'
+          OnClick = mniPeanobClick
+        end
+      end
     end
   end
 end
