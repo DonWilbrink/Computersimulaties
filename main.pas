@@ -14,6 +14,8 @@ type
 
   TfrmMain = class(TForm)
     btnTeken: TButton;
+    mniLind1: TMenuItem;
+    mniHoofdstuk10: TMenuItem;
     mniPeanob: TMenuItem;
     mniPeano: TMenuItem;
     mniHoofdstuk9: TMenuItem;
@@ -87,6 +89,7 @@ type
     procedure mniBoommcClick(Sender: TObject);
     procedure mniEiClick(Sender: TObject);
     procedure mniKleeClick(Sender: TObject);
+    procedure mniLind1Click(Sender: TObject);
     procedure mniMoireS2Click(Sender: TObject);
     procedure mniGaussClick(Sender: TObject);
     procedure mniHekClick(Sender: TObject);
@@ -577,7 +580,7 @@ begin
   Sender := Sender;
   prog := 15;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Zwevingen van golven';
+  frmMain.Caption := 'Computer simulaties: ' + mniZweving.Caption;
   xOff := 0;
   yOff := pbMain.Height div 2;
   xFac := pbMain.Width;
@@ -665,7 +668,7 @@ begin
   Sender := Sender;
   prog := 3;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Priemgetallenkleedje van Gauss';
+  frmMain.Caption := 'Computer simulaties: ' + mniGauss.Caption;
   xOff := pbMain.Width div 2;
   yOff := pbMain.Height div 2;
   xFac := pbMain.Width/80;
@@ -719,7 +722,7 @@ begin
   Sender := Sender;
   prog := 16;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Zwevingen bij hekken';
+  frmMain.Caption := 'Computer simulaties: ' + mniHek.Caption;
   a1 := 19;
   a2 := 22;
   h1 := 5;
@@ -756,7 +759,7 @@ begin
   Sender := Sender;
   prog := 8;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Hoogte 1';
+  frmMain.Caption := 'Computer simulaties: ' + mniHoogte1.Caption;
   xm := pbMain.Width div 2;
   ym := pbMain.Height div 2;
   n := xm;
@@ -786,7 +789,7 @@ begin
   Sender := Sender;
   prog := 9;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Hoogte 2';
+  frmMain.Caption := 'Computer simulaties: ' + mniHoogte2.Caption;
   xm := pbMain.Width div 2;
   ym := pbMain.Height div 2;
   n := xm;
@@ -905,7 +908,7 @@ begin
   Sender := Sender;
   prog := 10;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Level lines of z=(x,y) for -1<z<1';
+  frmMain.Caption := 'Computer simulaties: ' + mniLevel.Caption;
   xOff := pbMain.Width div 2;
   yOff := pbMain.Height div 2;
   xFac := pbMain.Width / 9.6;
@@ -990,7 +993,7 @@ begin
   Sender := Sender;
   prog := 4;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Lissajous krommen';
+  frmMain.Caption := 'Computer simulaties: ' + mniLissa1.Caption;
   xOff := pbMain.Width div 2;
   yOff := pbMain.Height div 2;
   xFac := pbMain.Width / 2;
@@ -1039,7 +1042,7 @@ begin
   Sender := Sender;
   prog := 5;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Figuur van Lissajous';
+  frmMain.Caption := 'Computer simulaties: ' + mniLissa2.Caption;
   xOff := pbMain.Width div 2;
   yOff := pbMain.Height div 2;
   xFac := pbMain.Width / 4;
@@ -1094,7 +1097,7 @@ begin
   Sender := Sender;
   prog := 6;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Lissajousachtige krommen';
+  frmMain.Caption := 'Computer simulaties: ' + mniLissa3.Caption;
   Panel1.Visible := True;
   GroupBox1.Visible := True;
   lblParameter1.Visible := True;
@@ -1143,7 +1146,7 @@ begin
   Sender := Sender;
   prog := 7;
   pbClear;
-  frmMain.Caption :=  'Computer simulaties: Lissajousachtige kromme in de vorm van een bloem';
+  frmMain.Caption :=  'Computer simulaties: ' + mniLissaf.Caption;
   Panel1.Visible := True;
   GroupBox1.Visible := True;
 
@@ -1192,7 +1195,7 @@ begin
   Sender := Sender;
   prog := 19;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Interferentie evenwijdige lijnen';
+  frmMain.Caption := 'Computer simulaties: ' + mniMoireC1.Caption;
   ym := pbMain.Height div 2;
   h  := 0.3;
   for m := 1 to 2 do
@@ -1224,7 +1227,7 @@ begin
   Sender := Sender;
   prog := 20;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Interferentie van cirkelbundels';
+  frmMain.Caption := 'Computer simulaties: ' + mniMoireC2.Caption;
   ym := pbMain.Height div 2;
   h := 0.3;
   for m := 1 to 2 do
@@ -1253,7 +1256,7 @@ begin
   Sender := Sender;
   prog := 17;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Interferentie evenwijdige lijnen';
+  frmMain.Caption := 'Computer simulaties: ' + mniMoireL1.Caption;
   a := 0.3;
   b := 0.32;
   i := 0;
@@ -1286,7 +1289,7 @@ begin
   Sender := Sender;
   prog := 18;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Interferentie evenwijdige lijnen, tweede bundel iets gedraaid';
+  frmMain.Caption := 'Computer simulaties: ' + mniMoireL2.Caption;
   i := 0;
   Alfa := 0.02;
   c := Cos(Alfa);
@@ -1313,7 +1316,7 @@ begin
   Sender := Sender;
   prog := 21;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Interferentie evenwijdige lijnen met pixelrooster van beeldscherm';
+  frmMain.Caption := 'Computer simulaties: ' + mniMoireS1.Caption;
   a := 7; // verticale verplaatsing
   for i := 1 to 250 do
   begin
@@ -1333,7 +1336,7 @@ begin
   Sender := Sender;
   prog := 23;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Interferentie van cirkels met pixelrooster van beeldscherm stralen in lineare progressie';
+  frmMain.Caption := 'Computer simulaties: ' + mniMoireS3.Caption;
   xm := pbMain.Width div 2;
   ym := pbMain.Height div 2;
   h := 0.2;
@@ -1463,7 +1466,7 @@ begin
   Sender := Sender;
   prog := 11;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Vierkant patroon';
+  frmMain.Caption := 'Computer simulaties: ' + mniPatroon1.Caption;
   Panel1.Visible := True;
   GroupBox1.Visible := True;
   lblParameter1.Visible := True;
@@ -1515,7 +1518,7 @@ begin
   Sender := Sender;
   prog := 12;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Rechthoekig kruissteekjespatroon';
+  frmMain.Caption := 'Computer simulaties: ' + mniPatroon2.Caption;
   xm := pbMain.Width div 2;
   ym := pbMain.Height div 2;
   n1 := 40;
@@ -1564,7 +1567,7 @@ begin
   Sender := Sender;
   prog := 13;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Patroon met bergen';
+  frmMain.Caption := 'Computer simulaties: ' + mniPatroon3.Caption;
   xm := pbMain.Width div 2;
   ym := pbMain.Height div 2;
   n1 :=  49 * pbMain.Width div 100;
@@ -1596,7 +1599,7 @@ begin
   Sender := Sender;
   prog := 14;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Een rechthoekig patroon';
+  frmMain.Caption := 'Computer simulaties: ' + mniPatroon4.Caption;
   xm := pbMain.Width div 2;
   ym := pbMain.Height div 2;
   n1 :=  49 * pbMain.Width div 100;
@@ -2352,6 +2355,88 @@ begin
   end; // for k
 end;
 
+procedure TfrmMain.mniLind1Click(Sender: TObject);
+var
+  nmax, i, n, m: Integer;
+  alfa, h, phi, x, y: Double;
+  u, v, w: Array[0..16] of Double;
+  axiom, prod, weg, s, ww, q: string;
+begin
+  Sender := Sender;
+  prog := 44;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniLind1.Caption;
+  xFac := pbMain.Width / 2;
+  yFac := -pbMain.Height / 1.5;
+  xOff := pbMain.Width div 2;
+  yOff := -pbMain.Height * 4 div 5;
+  nmax := 4;
+
+  // beginpositie, hoek en staplengte
+  x := 0;
+  y := -2.5;
+  alfa := pi / 6;
+  h := 0.02;
+
+  // axioma en produktieregel
+  axiom := 'F';
+  //prod := 'F[+F]F[-F]F';
+  prod := 'FF+[+F-F-F]-[-F+F+F]';
+
+  // vorming van woord
+  weg := axiom;
+  for n := 1 to nmax do
+  begin
+    ww := '';
+    for i := 1 to weg.Length do
+    begin
+      s := Copy(weg, i, 1);
+      if s = 'F' then q := prod else q := s;
+      ww := ww + q;
+    end; // for i
+    weg := ww;
+  end; // for n
+
+  // graphics
+  phi := pi / 2;
+  m := 1;
+  with pbMain.Canvas do
+  begin
+    MoveTo(Round(xFac*x+xOff),Round(yFac*y+yOff));
+    for i := 1 to weg.Length do
+    begin
+      s := Copy(weg, i, 1);
+      case s of
+      '+':
+        phi := phi + alfa;
+      '-':
+        phi := phi - alfa;
+      'F':
+        begin
+          x := x + h * Cos(phi);
+          y := y + h * Sin(phi);
+          LineTo(Round(xFac*x+xOff),Round(yFac*y+yOff));
+        end;
+      '[':
+        begin
+          m := m + 1;
+          u[m] := x;
+          v[m] := y;
+          w[m] := phi;
+        end;
+      ']':
+        begin
+          x := u[m];
+          y := v[m];
+          phi := w[m];
+          m := m - 1;
+          MoveTo(Round(xFac*x+xOff),Round(yFac*y+yOff));
+        end;
+      end;
+    end; // for i
+  end; // with
+end;
+
 procedure TfrmMain.mniMoireS2Click(Sender: TObject);
 var
   i, x, x0, y, y0: Integer;
@@ -2359,7 +2444,7 @@ begin
   Sender := Sender;
   prog := 22;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: Interferentie van stralenbundel met pixelrooster van beeldscherm';
+  frmMain.Caption := 'Computer simulaties: ' + mniMoireS2.Caption;
   x0 := pbMain.Width div 2;
   y0 := 0; // centrum bundel
   for i := 1 to 160 do

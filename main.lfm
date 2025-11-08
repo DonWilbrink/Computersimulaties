@@ -302,6 +302,13 @@ object frmMain: TfrmMain
           OnClick = mniPeanobClick
         end
       end
+      object mniHoofdstuk10: TMenuItem
+        Caption = 'Hoofdstuk 10'
+        object mniLind1: TMenuItem
+          Caption = 'Plantengroei volgens Lindemayer'
+          OnClick = mniLind1Click
+        end
+      end
     end
   end
 end
