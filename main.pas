@@ -14,6 +14,7 @@ type
 
   TfrmMain = class(TForm)
     btnTeken: TButton;
+    mniLind2: TMenuItem;
     mniLind1: TMenuItem;
     mniHoofdstuk10: TMenuItem;
     mniPeanob: TMenuItem;
@@ -59,6 +60,7 @@ type
     mniHoogte2: TMenuItem;
     mniHoogte1: TMenuItem;
     mniHoofdstuk3: TMenuItem;
+    rgFuncties: TRadioGroup;
     seParameter4: TFloatSpinEdit;
     GroupBox1: TGroupBox;
     lblParameter1: TLabel;
@@ -90,6 +92,7 @@ type
     procedure mniEiClick(Sender: TObject);
     procedure mniKleeClick(Sender: TObject);
     procedure mniLind1Click(Sender: TObject);
+    procedure mniLind2Click(Sender: TObject);
     procedure mniMoireS2Click(Sender: TObject);
     procedure mniGaussClick(Sender: TObject);
     procedure mniHekClick(Sender: TObject);
@@ -127,6 +130,7 @@ type
     procedure mniTurtlekClick(Sender: TObject);
     procedure mniVarenClick(Sender: TObject);
     procedure mniZwevingClick(Sender: TObject);
+    procedure rgFunctiesSelectionChanged(Sender: TObject);
     procedure seParameter1Change(Sender: TObject);
     procedure seParameter2Change(Sender: TObject);
     procedure seParameter3Change(Sender: TObject);
@@ -134,6 +138,7 @@ type
   private
     procedure pbClear;
     procedure Cirkel(x,y: Integer; r:Double);
+    procedure LindTeken;
   public
 
   end;
@@ -599,6 +604,107 @@ begin
       t := t + 0.0001;
     end;
   end;
+end;
+
+procedure TfrmMain.rgFunctiesSelectionChanged(Sender: TObject);
+var
+  nmax, m: Integer;
+  alfa, h, phi, x, y: Double;
+  u, v, w: Array[0..16] of Double;
+  axiom, prod, weg, s, ww, q: string;
+
+  procedure woord;
+  var
+    i, n: Integer;
+  begin
+    // vorming van woord
+    weg := axiom;
+    for n := 1 to nmax do
+    begin
+      ww := '';
+      for i := 1 to weg.Length do
+      begin
+        s := Copy(weg, i, 1);
+        if s = 'F' then q := prod else q := s;
+        ww := ww + q;
+      end; // for i
+      weg := ww;
+    end; // for n
+  end;
+
+  procedure graphics;
+  var
+    i: Integer;
+  begin
+    // graphics
+    phi := pi / 2;
+    m := 1;
+    with pbMain.Canvas do
+    begin
+      MoveTo(Round(xFac*x+xOff),Round(yFac*y+yOff));
+      for i := 1 to weg.Length do
+      begin
+        s := Copy(weg, i, 1);
+        case s of
+        '+':
+          phi := phi + alfa;
+        '-':
+          phi := phi - alfa;
+        'F':
+          begin
+            x := x + h * Cos(phi);
+            y := y + h * Sin(phi);
+            LineTo(Round(xFac*x+xOff),Round(yFac*y+yOff));
+          end;
+        '[':
+          begin
+            m := m + 1;
+            u[m] := x;
+            v[m] := y;
+            w[m] := phi;
+          end;
+        ']':
+          begin
+            x := u[m];
+            y := v[m];
+            phi := w[m];
+            m := m - 1;
+            MoveTo(Round(xFac*x+xOff),Round(yFac*y+yOff));
+          end;
+        end;
+      end; // for i
+    end; // with
+  end;
+
+begin
+  pbMain.Canvas.Clear;
+  nmax := 4;
+
+  // beginpositie, hoek en staplengte
+  x := 0;
+  y := -2.5;
+
+  h := 0.02;
+
+  // axioma en produktieregel
+  axiom := 'F';
+  //prod := 'F[+F]F[-F]F';
+  case rgFuncties.ItemIndex of
+  0:
+    begin
+      prod := 'F[+F]F[-F]F';
+      alfa := pi / 7;
+      woord;
+      graphics;
+    end;
+  1:
+    begin
+      prod := 'FF+[+F-F-F]-[-F+F+F]';
+      alfa := pi / 6;
+      woord;
+      graphics;
+    end;
+  end; // case
 end;
 
 procedure TfrmMain.seParameter1Change(Sender: TObject);
@@ -2356,66 +2462,118 @@ begin
 end;
 
 procedure TfrmMain.mniLind1Click(Sender: TObject);
-var
-  nmax, i, n, m: Integer;
-  alfa, h, phi, x, y: Double;
-  u, v, w: Array[0..16] of Double;
-  axiom, prod, weg, s, ww, q: string;
+
 begin
   Sender := Sender;
   prog := 44;
   pbClear;
   frmMain.Caption := 'Computer simulaties: ' + mniLind1.Caption;
+  Panel1.Visible := True;
+  GroupBox1.Visible := True;
+  rgFuncties.Visible := True;
+  rgFuncties.Caption := 'Plant formules';
+  rgFuncties.Items.Add('F[+F]F[-F]F');
+  rgFuncties.Items.Add('FF+[+F-F-F]-[-F+F+F]');
+  rgFuncties.ItemIndex := 0;
   xFac := pbMain.Width / 2;
   yFac := -pbMain.Height / 1.5;
   xOff := pbMain.Width div 2;
   yOff := -pbMain.Height * 4 div 5;
-  nmax := 4;
+  rgFunctiesSelectionChanged(Sender);
+end;
 
-  // beginpositie, hoek en staplengte
+procedure TfrmMain.mniLind2Click(Sender: TObject);
+var
+  i, lp, lp1, lp2, n, nmax, m, s: Integer;
+  delta, h, phi, x, y: Double;
+  axiom, prod1, prod2: string;
+  p: Array of Char;
+  u, v, w: Array [0..16] of Double;
+  nn: Array of Integer;
+
+begin
+  Sender := Sender;
+  prog := 45;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniLind1.Caption;
+  //Panel1.Visible := True;
+  //GroupBox1.Visible := True;
+  {rgFuncties.Visible := True;
+  rgFuncties.Caption := 'Plant formules';
+  rgFuncties.Items.Add('F[+F]F[-F]F');
+  rgFuncties.Items.Add('FF+[+F-F-F]-[-F+F+F]');
+  rgFuncties.ItemIndex := 0;}
+  xFac := pbMain.Width / 6;
+  yFac := -pbMain.Height / 6;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  nmax := 6;
   x := 0;
   y := -2.5;
-  alfa := pi / 6;
-  h := 0.02;
-
-  // axioma en produktieregel
-  axiom := 'F';
-  //prod := 'F[+F]F[-F]F';
-  prod := 'FF+[+F-F-F]-[-F+F+F]';
-
-  // vorming van woord
-  weg := axiom;
-  for n := 1 to nmax do
-  begin
-    ww := '';
-    for i := 1 to weg.Length do
-    begin
-      s := Copy(weg, i, 1);
-      if s = 'F' then q := prod else q := s;
-      ww := ww + q;
-    end; // for i
-    weg := ww;
-  end; // for n
-
-  // graphics
   phi := pi / 2;
-  m := 1;
-  with pbMain.Canvas do
+  delta := pi / 8;
+  h := 0.032;
+
+  // axioma en productieregel
+  axiom := 'X';
+  prod1 := 'F-[[X]+X]+F[+FX]-X';
+  prod2 := 'FF';
+  lp1 := length(prod1);
+  lp2 := length(prod2);
+  lp := lp1 + lp2;
+  SetLength(p, lp * nmax);
+  SetLength(nn, lp * nmax);
+
+  // hoofdprogramma
+  s := 1;
+  n := 0;
+  p[1] := 'X';
+  nn[1] := 0;
+  m := 0;
+  while s > 0 do
   begin
-    MoveTo(Round(xFac*x+xOff),Round(yFac*y+yOff));
-    for i := 1 to weg.Length do
+    while n < nmax do
     begin
-      s := Copy(weg, i, 1);
-      case s of
+      n := nn[s] + 1;
+      case p[s] of
+      'X':
+        begin
+          s := s - 1;
+          for i := lp1 downto 1 do
+          begin
+            s := s + 1;
+            nn[s] := n;
+            p[s] := prod1[i];
+          end;
+        end;
+      'F':
+        begin
+          s := s - 1;
+          for i := lp2 downto 1 do
+          begin
+            s := s + 1;
+            nn[s] := n;
+            p[s] := prod2[i];
+          end;
+        end;
+      '+', '-', '[', ']':
+        nn[s] := n;
+      end; // case
+    end; // while n
+    // graphics
+    with pbMain.Canvas do
+    begin
+      MoveTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
+      case p[s] of
       '+':
-        phi := phi + alfa;
+        phi := phi + delta;
       '-':
-        phi := phi - alfa;
+        phi := phi - delta;
       'F':
         begin
           x := x + h * Cos(phi);
           y := y + h * Sin(phi);
-          LineTo(Round(xFac*x+xOff),Round(yFac*y+yOff));
+          LineTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
         end;
       '[':
         begin
@@ -2430,11 +2588,13 @@ begin
           y := v[m];
           phi := w[m];
           m := m - 1;
-          MoveTo(Round(xFac*x+xOff),Round(yFac*y+yOff));
+          MoveTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
         end;
-      end;
-    end; // for i
-  end; // with
+      end; // case
+      s := s - 1;
+      n := nn[s];
+    end; // with
+  end; // while s
 end;
 
 procedure TfrmMain.mniMoireS2Click(Sender: TObject);
@@ -2467,6 +2627,7 @@ begin
   end;
   Panel1.Visible := False;
   GroupBox1.Visible := False;
+  rgFuncties.Visible := False;
   lblParameter1.Visible := False;
   lblParameter2.Visible := False;
   seParameter1.Visible := False;
@@ -2500,6 +2661,11 @@ begin
       y1 := y2;
     end;
   end;
+end;
+
+procedure TfrmMain.LindTeken;
+begin
+
 end;
 
 end.

@@ -1,7 +1,7 @@
 object frmMain: TfrmMain
-  Left = 353
+  Left = 374
   Height = 696
-  Top = 32
+  Top = 216
   Width = 958
   Caption = 'Computer simulaties'
   ClientHeight = 696
@@ -9,6 +9,7 @@ object frmMain: TfrmMain
   DesignTimePPI = 120
   KeyPreview = True
   Menu = Hoofdminu
+  LCLVersion = '4.4.0.0'
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnKeyPress = FormKeyPress
@@ -34,10 +35,10 @@ object frmMain: TfrmMain
       Left = 16
       Height = 416
       Top = 48
-      Width = 231
+      Width = 272
       Caption = 'Parameters'
       ClientHeight = 391
-      ClientWidth = 227
+      ClientWidth = 268
       TabOrder = 0
       object lblParameter1: TLabel
         Left = 10
@@ -86,6 +87,25 @@ object frmMain: TfrmMain
         Width = 63
         TabOrder = 3
         OnChange = seParameter4Change
+      end
+      object rgFuncties: TRadioGroup
+        Left = 10
+        Height = 131
+        Top = 168
+        Width = 246
+        AutoFill = True
+        Caption = 'rgFuncties'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        ClientHeight = 106
+        ClientWidth = 242
+        TabOrder = 4
+        OnSelectionChanged = rgFunctiesSelectionChanged
       end
     end
   end
@@ -307,6 +327,10 @@ object frmMain: TfrmMain
         object mniLind1: TMenuItem
           Caption = 'Plantengroei volgens Lindemayer'
           OnClick = mniLind1Click
+        end
+        object mniLind2: TMenuItem
+          Caption = 'Plantengroei volgens Lindenmayer, versie met backtracking'
+          OnClick = mniLind2Click
         end
       end
     end
