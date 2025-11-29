@@ -608,10 +608,12 @@ end;
 
 procedure TfrmMain.rgFunctiesSelectionChanged(Sender: TObject);
 var
-  nmax, m: Integer;
-  alfa, h, phi, x, y: Double;
+  i, lp, lp1, lp2, lpx, lpy, nmax, m, n, ss: Integer;
+  alfa, delta, h, phi, x, y: Double;
   u, v, w: Array[0..16] of Double;
-  axiom, prod, weg, s, ww, q: string;
+  axiom, prod, prod1, prod2, prodx, prody, weg, s, ww, q: string;
+  p: Array of string;
+  nn: Array of Integer;
 
   procedure woord;
   var
@@ -678,33 +680,185 @@ var
 
 begin
   pbMain.Canvas.Clear;
-  nmax := 4;
-
-  // beginpositie, hoek en staplengte
-  x := 0;
-  y := -2.5;
-
-  h := 0.02;
-
-  // axioma en produktieregel
-  axiom := 'F';
-  //prod := 'F[+F]F[-F]F';
-  case rgFuncties.ItemIndex of
-  0:
+  case prog of
+  44:
     begin
-      prod := 'F[+F]F[-F]F';
-      alfa := pi / 7;
-      woord;
-      graphics;
-    end;
-  1:
+      nmax := 4;
+
+      // beginpositie, hoek en staplengte
+      x := 0;
+      y := -2.5;
+      h := 0.02;
+
+      // axioma en produktieregel
+      axiom := 'F';
+      //prod := 'F[+F]F[-F]F';
+      case rgFuncties.ItemIndex of
+      0:
+        begin
+          prod := 'F[+F]F[-F]F';
+          alfa := pi / 7;
+          woord;
+          graphics;
+        end;
+      1:
+        begin
+          prod := 'FF+[+F-F-F]-[-F+F+F]';
+          alfa := pi / 6;
+          woord;
+          graphics;
+        end;
+      end; // case ItemIndex
+    end; // 44
+  45:
     begin
-      prod := 'FF+[+F-F-F]-[-F+F+F]';
-      alfa := pi / 6;
-      woord;
-      graphics;
-    end;
-  end; // case
+      //nmax := 6;
+      x := 0;
+      y := -2.5;
+      phi := pi / 2;
+      delta := pi / 8;
+      h := 0.032;
+      pbMain.Canvas.Pen.Color := clLime;
+
+      // axioma en productieregel
+
+      case rgFuncties.ItemIndex of
+      0:
+        begin
+          nmax := 6;
+          xFac := pbMain.Width / 6;
+          yFac := -pbMain.Height / 6;
+          yOff := pbMain.Height div 2;
+          axiom := 'X';
+          prod1 := 'F[+X]F[-X]+X';
+          prod2 := 'FF';
+          alfa := pi / 9;
+          lp1 := length(prod1);
+          lp2 := length(prod2);
+          lp := lp1 + lp2;
+        end;
+      1:
+        begin
+          nmax := 6;
+          xFac := pbMain.Width / 1.1;
+          yFac := -pbMain.Height / 1.1;
+          yOff := -pbMain.Height - 200;
+          axiom := 'Y';
+          prody := 'YFX[+Y][-Y]';
+          prodx := 'X[-FFF][+FFF]FX';
+          prod2 := 'F';
+          alfa := pi / 7;
+          //lp1 := length(prod1);
+          lp2 := length(prod2);
+          lpy := length(prody);
+          lpx := length(prodx);
+          lp := lpy + lp2 + lpx;
+        end;
+      2:
+        begin
+          nmax := 6;
+          xFac := pbMain.Width / 6;
+          yFac := -pbMain.Height / 6;
+          yOff := pbMain.Height div 2;
+          axiom := 'X';
+          prod1 := 'F-[[X]+X]+F[+FX]-X';
+          prod2 := 'FF';
+          alfa := pi / 8;
+          lp1 := length(prod1);
+          lp2 := length(prod2);
+          //lpy := length(prody);
+          lp := lp1 + lp2;
+        end;
+      end; // case ItemIndex
+
+
+
+      SetLength(p, lp * nmax);
+      SetLength(nn, lp * nmax);
+
+      // hoofdprogramma
+      ss := 1;
+      n := 0;
+      p[1] := Axiom;
+      nn[1] := 0;
+      m := 0;
+      while ss > 0 do
+      begin
+        while n < nmax do
+        begin
+          n := nn[ss] + 1;
+          case p[ss] of
+          'X':
+            begin
+              ss := ss - 1;
+              for i := lp1 downto 1 do
+              begin
+                ss := ss + 1;
+                nn[ss] := n;
+                p[ss] := prod1[i];
+              end;
+            end;
+          'F':
+            begin
+              ss := ss - 1;
+              for i := lp2 downto 1 do
+              begin
+                ss := ss + 1;
+                nn[ss] := n;
+                p[ss] := prod2[i];
+              end;
+            end;
+          'Y':
+            begin
+              ss := ss - 1;
+              for i := lpy downto 1 do
+              begin
+                ss := ss + 1;
+                nn[ss] := n;
+                p[ss] := prody[i];
+              end;
+            end;
+          '+', '-', '[', ']':
+            nn[ss] := n;
+          end; // case
+        end; // while n
+        // graphics
+        with pbMain.Canvas do
+        begin
+          MoveTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
+          case p[ss] of
+          '+':
+            phi := phi + delta;
+          '-':
+            phi := phi - delta;
+          'F':
+            begin
+              x := x + h * Cos(phi);
+              y := y + h * Sin(phi);
+              LineTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
+            end;
+          '[':
+            begin
+              m := m + 1;
+              u[m] := x;
+              v[m] := y;
+              w[m] := phi;
+            end;
+          ']':
+            begin
+              x := u[m];
+              y := v[m];
+              phi := w[m];
+              m := m - 1;
+              MoveTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
+            end;
+          end; // case
+          ss := ss - 1;
+          n := nn[ss];
+        end; // with
+      end; // while s
+    end;  // 45
+  end; // case prog
 end;
 
 procedure TfrmMain.seParameter1Change(Sender: TObject);
@@ -2479,122 +2633,30 @@ begin
   yFac := -pbMain.Height / 1.5;
   xOff := pbMain.Width div 2;
   yOff := -pbMain.Height * 4 div 5;
+  pbMain.Canvas.Pen.Color := clLime;
   rgFunctiesSelectionChanged(Sender);
 end;
 
 procedure TfrmMain.mniLind2Click(Sender: TObject);
-var
-  i, lp, lp1, lp2, n, nmax, m, s: Integer;
-  delta, h, phi, x, y: Double;
-  axiom, prod1, prod2: string;
-  p: Array of Char;
-  u, v, w: Array [0..16] of Double;
-  nn: Array of Integer;
 
 begin
   Sender := Sender;
   prog := 45;
   pbClear;
-  frmMain.Caption := 'Computer simulaties: ' + mniLind1.Caption;
-  //Panel1.Visible := True;
-  //GroupBox1.Visible := True;
-  {rgFuncties.Visible := True;
+  frmMain.Caption := 'Computer simulaties: ' + mniLind2.Caption;
+  Panel1.Visible := True;
+  GroupBox1.Visible := True;
+  rgFuncties.Visible := True;
   rgFuncties.Caption := 'Plant formules';
-  rgFuncties.Items.Add('F[+F]F[-F]F');
-  rgFuncties.Items.Add('FF+[+F-F-F]-[-F+F+F]');
-  rgFuncties.ItemIndex := 0;}
-  xFac := pbMain.Width / 6;
-  yFac := -pbMain.Height / 6;
+  rgFuncties.Items.Add('Optie 1');
+  rgFuncties.Items.Add('Optie 2');
+  rgFuncties.Items.Add('Optie 3');
+  rgFuncties.ItemIndex := 0;
+  //xFac := pbMain.Width / 6;
+  //yFac := -pbMain.Height / 6;
   xOff := pbMain.Width div 2;
   yOff := pbMain.Height div 2;
-  nmax := 6;
-  x := 0;
-  y := -2.5;
-  phi := pi / 2;
-  delta := pi / 8;
-  h := 0.032;
-
-  // axioma en productieregel
-  axiom := 'X';
-  prod1 := 'F-[[X]+X]+F[+FX]-X';
-  prod2 := 'FF';
-  lp1 := length(prod1);
-  lp2 := length(prod2);
-  lp := lp1 + lp2;
-  SetLength(p, lp * nmax);
-  SetLength(nn, lp * nmax);
-
-  // hoofdprogramma
-  s := 1;
-  n := 0;
-  p[1] := 'X';
-  nn[1] := 0;
-  m := 0;
-  while s > 0 do
-  begin
-    while n < nmax do
-    begin
-      n := nn[s] + 1;
-      case p[s] of
-      'X':
-        begin
-          s := s - 1;
-          for i := lp1 downto 1 do
-          begin
-            s := s + 1;
-            nn[s] := n;
-            p[s] := prod1[i];
-          end;
-        end;
-      'F':
-        begin
-          s := s - 1;
-          for i := lp2 downto 1 do
-          begin
-            s := s + 1;
-            nn[s] := n;
-            p[s] := prod2[i];
-          end;
-        end;
-      '+', '-', '[', ']':
-        nn[s] := n;
-      end; // case
-    end; // while n
-    // graphics
-    with pbMain.Canvas do
-    begin
-      MoveTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
-      case p[s] of
-      '+':
-        phi := phi + delta;
-      '-':
-        phi := phi - delta;
-      'F':
-        begin
-          x := x + h * Cos(phi);
-          y := y + h * Sin(phi);
-          LineTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
-        end;
-      '[':
-        begin
-          m := m + 1;
-          u[m] := x;
-          v[m] := y;
-          w[m] := phi;
-        end;
-      ']':
-        begin
-          x := u[m];
-          y := v[m];
-          phi := w[m];
-          m := m - 1;
-          MoveTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
-        end;
-      end; // case
-      s := s - 1;
-      n := nn[s];
-    end; // with
-  end; // while s
+  rgFunctiesSelectionChanged(Sender);
 end;
 
 procedure TfrmMain.mniMoireS2Click(Sender: TObject);

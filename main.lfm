@@ -1,7 +1,7 @@
 object frmMain: TfrmMain
-  Left = 374
+  Left = 465
   Height = 696
-  Top = 216
+  Top = 137
   Width = 958
   Caption = 'Computer simulaties'
   ClientHeight = 696
@@ -102,8 +102,6 @@ object frmMain: TfrmMain
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 1
-        ClientHeight = 106
-        ClientWidth = 242
         TabOrder = 4
         OnSelectionChanged = rgFunctiesSelectionChanged
       end
