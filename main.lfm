@@ -331,6 +331,21 @@ object frmMain: TfrmMain
           OnClick = mniLind2Click
         end
       end
+      object mniHoofdstuk11: TMenuItem
+        Caption = 'Hoofdstuk 11'
+        object mniBol: TMenuItem
+          Caption = 'Bol, breedtecirkels en meridianen'
+          OnClick = mniBolClick
+        end
+        object mniAarde: TMenuItem
+          Caption = 'Een eiland op een draaiende aarde'
+          OnClick = mniAardeClick
+        end
+        object mniEiland: TMenuItem
+          Caption = 'Vier kaartprojecties van een naar het noorden opschuivend eiland'
+          OnClick = mniEilandClick
+        end
+      end
     end
   end
 end

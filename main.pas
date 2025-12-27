@@ -14,6 +14,10 @@ type
 
   TfrmMain = class(TForm)
     btnTeken: TButton;
+    mniEiland: TMenuItem;
+    mniAarde: TMenuItem;
+    mniBol: TMenuItem;
+    mniHoofdstuk11: TMenuItem;
     mniLind2: TMenuItem;
     mniLind1: TMenuItem;
     mniHoofdstuk10: TMenuItem;
@@ -85,11 +89,14 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormKeyPress(Sender: TObject; var Key: char);
+    procedure mniAardeClick(Sender: TObject);
     procedure mniArtblokClick(Sender: TObject);
     procedure mniBlokeiClick(Sender: TObject);
+    procedure mniBolClick(Sender: TObject);
     procedure mniBoombtClick(Sender: TObject);
     procedure mniBoommcClick(Sender: TObject);
     procedure mniEiClick(Sender: TObject);
+    procedure mniEilandClick(Sender: TObject);
     procedure mniKleeClick(Sender: TObject);
     procedure mniLind1Click(Sender: TObject);
     procedure mniLind2Click(Sender: TObject);
@@ -608,10 +615,14 @@ end;
 
 procedure TfrmMain.rgFunctiesSelectionChanged(Sender: TObject);
 var
-  i, lp, lp1, lp2, lpx, lpy, nmax, m, n, ss: Integer;
+  i, j, k, m, n, pp: Integer;
+  aa, bb, u1, v1, vv, xv, yv, zv, xx, yy, zz: Double;
+  a, b: Array [0..4] of Double;
+  data: Array [1..8] of Integer = (-18,-18,18,-18,18,18,-18,18);
+  lp, lp2, lpx, lpy, nmax, ss: Integer;
   alfa, delta, h, phi, x, y: Double;
   u, v, w: Array[0..16] of Double;
-  axiom, prod, prod1, prod2, prodx, prody, weg, s, ww, q: string;
+  axiom, prod, prod2, prodx, prody, weg, s, ww, q: string;
   p: Array of string;
   nn: Array of Integer;
 
@@ -696,6 +707,10 @@ begin
       case rgFuncties.ItemIndex of
       0:
         begin
+          xFac := pbMain.Width / 2;
+          yFac := -pbMain.Height / 2;
+          xOff := pbMain.Width div 2;
+          yOff := -pbMain.Height div 3;
           prod := 'F[+F]F[-F]F';
           alfa := pi / 7;
           woord;
@@ -703,6 +718,10 @@ begin
         end;
       1:
         begin
+          xFac := pbMain.Width / 1.5;
+          yFac := -pbMain.Height / 1.5;
+          xOff := pbMain.Width div 2;
+          yOff := -pbMain.Height * 3 div 4;
           prod := 'FF+[+F-F-F]-[-F+F+F]';
           alfa := pi / 6;
           woord;
@@ -716,7 +735,7 @@ begin
       x := 0;
       y := -2.5;
       phi := pi / 2;
-      delta := pi / 8;
+      //delta := pi / 8;
       h := 0.032;
       pbMain.Canvas.Pen.Color := clLime;
 
@@ -728,26 +747,28 @@ begin
           nmax := 6;
           xFac := pbMain.Width / 6;
           yFac := -pbMain.Height / 6;
+          xOff := pbMain.Width div 2;
           yOff := pbMain.Height div 2;
           axiom := 'X';
-          prod1 := 'F[+X]F[-X]+X';
+          prodx := 'F[+X]F[-X]+X';
           prod2 := 'FF';
-          alfa := pi / 9;
-          lp1 := length(prod1);
+          delta := pi / 9;
+          lpx := length(prodx);
           lp2 := length(prod2);
-          lp := lp1 + lp2;
+          lp := lpx + lp2;
         end;
       1:
         begin
           nmax := 6;
-          xFac := pbMain.Width / 1.1;
-          yFac := -pbMain.Height / 1.1;
-          yOff := -pbMain.Height - 200;
+          xFac := pbMain.Width / 5;
+          yFac := -pbMain.Height / 5;
+          xOff := pbMain.Width div 2;
+          yOff := pbMain.Height div 3 ;
           axiom := 'Y';
           prody := 'YFX[+Y][-Y]';
           prodx := 'X[-FFF][+FFF]FX';
           prod2 := 'F';
-          alfa := pi / 7;
+          delta := pi / 7;
           //lp1 := length(prod1);
           lp2 := length(prod2);
           lpy := length(prody);
@@ -759,19 +780,18 @@ begin
           nmax := 6;
           xFac := pbMain.Width / 6;
           yFac := -pbMain.Height / 6;
+          xOff := pbMain.Width div 2;
           yOff := pbMain.Height div 2;
           axiom := 'X';
-          prod1 := 'F-[[X]+X]+F[+FX]-X';
+          prodx := 'F-[[X]+X]+F[+FX]-X';
           prod2 := 'FF';
-          alfa := pi / 8;
-          lp1 := length(prod1);
+          delta := pi / 8;
+          lpx := length(prodx);
           lp2 := length(prod2);
           //lpy := length(prody);
-          lp := lp1 + lp2;
+          lp := lpx + lp2;
         end;
       end; // case ItemIndex
-
-
 
       SetLength(p, lp * nmax);
       SetLength(nn, lp * nmax);
@@ -791,11 +811,11 @@ begin
           'X':
             begin
               ss := ss - 1;
-              for i := lp1 downto 1 do
+              for i := lpx downto 1 do
               begin
                 ss := ss + 1;
                 nn[ss] := n;
-                p[ss] := prod1[i];
+                p[ss] := prodx[i];
               end;
             end;
           'F':
@@ -858,6 +878,78 @@ begin
         end; // with
       end; // while s
     end;  // 45
+  48:
+    begin
+
+      //Application.ProcessMessages;
+
+      m := 4;
+      n := 128;
+      j := 1;
+      for i := 0 TO m - 1 do
+      begin
+        a[i] := data[j];
+        inc(j);
+        b[i] := data[j];
+        inc(J);
+        a[i] := a[i] * pi / 180;
+        b[i] := b[i] * pi / 180;
+      end; // for i
+      a[m] := a[0];
+      b[m] := b[0];
+
+
+      pp := rgFuncties.ItemIndex;
+
+      for k := 0 to 12 do
+      begin
+        vv := k * pi / 30;
+        for i := 0 to m - 1 do
+        begin
+          for j := 0 to n do
+          begin
+            aa := ((n - j) * a[i] + j * a[i+1]) / n;
+            bb := ((n - j) * b[i] + j * b[i+1]) / n;
+            xx := Cos(aa) * Cos(bb);
+            yy := Sin(aa) * Cos(bb);
+            zz := Sin(bb);
+            xv := xx * Cos(vv) - zz * Sin(vv);
+            yv := yy;
+            zv := xx * Sin(vv) + zz * Cos(vv);
+            bb := ArcTan(zv / Sqrt(1 - zv * zv + 0.000001));
+            if xv > 0 then aa := ArcTan(yv / xv);
+            if xv = 0 then aa := Sign(yv) * pi / 2;
+            if xv < 0 then aa := ArcTan(yv / xv) + pi * Sign(yv);
+            case pp of
+            0:
+              begin
+                u1 := aa;
+                v1 := bb;
+              end;
+            1:
+              begin
+                u1 := aa;
+                v1 := Sin(bb);
+              end;
+            2:
+              begin
+                u1 := aa;
+                v1 := Ln(Tan(pi / 4 + bb / 2));
+              end;
+            3:
+              begin
+                u1 := aa * Cos(bb);
+                v1 := bb;
+              end;
+            end; // case
+            pbMain.Canvas.Pixels[Round(xOff+xFac*u1),Round(yOff+yFac*v1)] := clYellow;
+          end; // for j
+        end; // for i
+        //Sleep(100);
+        for i := 1 to 100000 do Application.ProcessMessages;
+        if k < 12 then pbMain.Canvas.Clear;
+      end; // for k
+    end; // 48
   end; // case prog
 end;
 
@@ -2265,6 +2357,100 @@ begin
   turtlekey := Key;
 end;
 
+procedure TfrmMain.mniAardeClick(Sender: TObject);
+var
+  k, i, j, m, phi, x1, x2, y1, y2: Integer;
+  aa, cbb, cf, ct, h, sbb, sf, st, t: Double;
+  a, b, cb, sb, u, v, u1, v1, w1: Array [0..6] of Double;
+  data: Array [1..12] of Integer = (0,45,3,40,9,40,12,45,9,50,3,50); // data van eiland
+begin
+  Sender := Sender;
+  prog := 47;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniAarde.Caption;
+  xFac := pbMain.Width / 2.5;
+  yFac := -pbMain.Height / 2.5;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  //turtlekey := #0;
+  phi := 25; // kijkhoek
+  sf := Sin(phi*pi/180);
+  cf := Cos(phi*pi/180);
+  m := 6;
+  J:=1;
+  FOR I:=1 TO M do
+    begin
+      A[I]:=DATA[J];
+      inc(J);
+      B[I]:=DATA[J];
+      inc(J);
+    end; // for I
+  a[0] := a[m];
+  b[0] := b[m];
+  for i := 0 to m do
+  begin
+    a[i] := a[i] * pi / 180;
+    b[i] := b[i] * pi / 180;
+    cb[i] := Cos(b[i]) / Sqrt(2);
+    sb[i] := Sin(b[i]);
+    u[i] := 0;
+    v[i] := 0;
+  end; // for
+  t := 0;
+  h := pi / 6000;
+
+  // hoofdlus voor draaiing aarde
+  repeat
+    pbMain.Canvas.EllipseC(xOff,yOff,Round(xFac),Round(yFac));
+    pbMain.Canvas.EllipseC(xOff,Round(xOff+xFac*-cf),Round(0.02*Xfac),Round(0.02*yFac));
+    for k := 1 to m do
+    begin
+      aa := a[k];
+      // bb := b[k];
+      sbb := sb[k];
+      cbb := cb[k];
+      st := Sin(aa+t);
+      ct := Cos(aa+t);
+      u1[k] := (st - ct) * cbb;
+      v1[k] := -(st + ct) * cbb * sf + sbb * cf;
+      w1[k] := (st + ct) * cbb * cf + sbb * sf;
+    end; // for k
+    u1[0] := u1[m];
+    v1[0] := v1[m];
+    w1[0] := w1[m];
+    // verwijdert vorige positie
+    pbMain.Canvas.Pen.Color := clBlack;
+    for k := 1 to m do
+    begin
+      x1 := Round(xOff+xFac*u[k-1]);
+      y1 := Round(yOff+yFac*v[k-1]);
+      x2 := Round(xOff+xFac*u[k]);
+      y2 := Round(yOff+yFac*v[k]);
+      pbMain.Canvas.Line(x1,y1,x2,y2);
+    end; // for k
+    // brengt eiland in nieuwe positie
+    pbMain.Canvas.Pen.Color := clYellow;
+    for k := 1 to m do
+    begin
+      if w1[k] > 0 then
+      begin
+        x1 := Round(xOff+xFac*u1[k-1]);
+        y1 := Round(yOff+yFac*v1[k-1]);
+        x2 := Round(xOff+xFac*u1[k]);
+        y2 := Round(yOff+yFac*v1[k]);
+        pbMain.Canvas.Line(x1,y1,x2,y2);
+      end; // if
+    end; // for k
+    for k := 0 to m do
+    begin
+      u[k] := u1[k];
+      v[k] := v1[k];
+    end; // for k
+    t := t + h;
+  until t >= 18;//turtlekey = #27;
+  //turtlekey := #0;
+end;
+
 procedure TfrmMain.mniArtblokClick(Sender: TObject);
 var
   i, j, k, l, m, nmax, Numcol: Integer;
@@ -2380,6 +2566,71 @@ begin
       pbMain.Canvas.FloodFill(Round(xOff+xFac*x0),Round(yOff+yFac*(a*Sqrt(1-x0*x0)*Sin(Pi*y0/2))),clBlack,fsSurface);
       //pbMain.Canvas.Pixels[Round(xOff+xFac*x0),Round(yOff+yFac*(a*Sqrt(1-x0*x0)*Sin(Pi*y0/2)))] := EgaColor[c];
     end; // for j
+  end; // for i
+end;
+
+procedure TfrmMain.mniBolClick(Sender: TObject);
+var
+  a, b, c, ca, cb, cf, sa, sb, sf, t, u, v, w, x, y, z: Double;
+  i, j, phi: Integer;
+begin
+  Sender := Sender;
+  prog := 46;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniBol.Caption;
+  xFac := pbMain.Width / 2.5;
+  yFac := -pbMain.Height / 2.5;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  c := 1 / Sqrt(2);
+  phi := 25;
+  sf := Sin(phi * pi / 180);
+  cf := Cos(phi * pi / 180);
+  pbMain.Canvas.EllipseC(xOff,yOff,Round(xFac),Round(yFac));
+
+  // breedtecirkels
+  for i := -5 to 5 do
+  begin
+    b := pi * i / 12;
+    sb := Sin(b);
+    cb := Cos(b);
+    j := 0;
+    while j <= 360 do
+    begin
+      t := j * pi / 180;
+      x := Cos(t) * cb;
+      y := Sin(t) * cb;
+      z := sb;
+      u := c * (y - x);
+      v := -c * sf * (x + y) + cf * z;
+      w := c * cf * (x + y) + sf * z;
+      if w > 0 then
+        pbMain.Canvas.Pixels[Round(xOff+xFac*u),Round(yOff+yFac*v)] := clYellow;
+      j := j + 2;
+    end; // while j
+  end; // for i
+
+  //pbMain.Canvas.EllipseC(xOff,yOff,Round(xFac),Round(yFac));
+  // meridianen
+  for i := 0 to 5 do
+  begin
+    a := pi * i / 6;
+    sa := Sin(a);
+    ca := Cos(a);
+    j := 0;
+    while j <= 360 do
+    begin
+      t := j * pi / 180;
+      x := ca * Cos(t);
+      y := sa * Cos(t);
+      z := Sin(t);
+      u := c * (y - x);
+      v := -c * sf * (x + y) + cf * z;
+      w := c * cf * (x + y) + sf * z;
+      if w > 0 then
+        pbMain.Canvas.Pixels[Round(xOff+xFac*u),Round(yOff+yFac*v)] := clYellow;
+      j := j + 2;
+    end; // while j
   end; // for i
 end;
 
@@ -2540,6 +2791,31 @@ begin
   end; // for k
 end;
 
+procedure TfrmMain.mniEilandClick(Sender: TObject);
+
+
+begin
+  Sender := Sender;
+  prog := 48;
+  pbClear;
+  Panel1.Visible := True;
+  GroupBox1.Visible := True;
+  rgFuncties.Visible := True;
+  rgFuncties.Caption := 'Gewenste projectie methode';
+  rgFuncties.Items.Clear;
+  frmMain.Caption := 'Computer simulaties: ' + mniEiland.Caption;
+  xFac := pbMain.Width / 2.5;
+  yFac := -pbMain.Height / 2.5;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height * 3 div 4;
+  // invoer gewenste projectie methode
+  rgFuncties.Items.Add('1 is equidistante cylinderprojectie');
+  rgFuncties.Items.Add('2 is gewone cylinderprojectie');
+  rgFuncties.Items.Add('3 is mercatorprojectie');
+  rgFuncties.Items.Add('4 is sanson-mercatorprojectie');
+  rgFuncties.ItemIndex := 0;
+end;
+
 procedure TfrmMain.mniKleeClick(Sender: TObject);
 var
   c, k, n: Integer;
@@ -2625,14 +2901,11 @@ begin
   Panel1.Visible := True;
   GroupBox1.Visible := True;
   rgFuncties.Visible := True;
+  rgFuncties.Items.Clear;
   rgFuncties.Caption := 'Plant formules';
   rgFuncties.Items.Add('F[+F]F[-F]F');
   rgFuncties.Items.Add('FF+[+F-F-F]-[-F+F+F]');
   rgFuncties.ItemIndex := 0;
-  xFac := pbMain.Width / 2;
-  yFac := -pbMain.Height / 1.5;
-  xOff := pbMain.Width div 2;
-  yOff := -pbMain.Height * 4 div 5;
   pbMain.Canvas.Pen.Color := clLime;
   rgFunctiesSelectionChanged(Sender);
 end;
@@ -2647,6 +2920,7 @@ begin
   Panel1.Visible := True;
   GroupBox1.Visible := True;
   rgFuncties.Visible := True;
+  rgFuncties.Items.Clear;
   rgFuncties.Caption := 'Plant formules';
   rgFuncties.Items.Add('Optie 1');
   rgFuncties.Items.Add('Optie 2');
