@@ -345,6 +345,10 @@ object frmMain: TfrmMain
           Caption = 'Vier kaartprojecties van een naar het noorden opschuivend eiland'
           OnClick = mniEilandClick
         end
+        object mniKaart: TMenuItem
+          Caption = 'Vijf projecties van een vierkant'
+          OnClick = mniKaartClick
+        end
       end
     end
   end

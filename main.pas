@@ -14,6 +14,7 @@ type
 
   TfrmMain = class(TForm)
     btnTeken: TButton;
+    mniKaart: TMenuItem;
     mniEiland: TMenuItem;
     mniAarde: TMenuItem;
     mniBol: TMenuItem;
@@ -97,6 +98,7 @@ type
     procedure mniBoommcClick(Sender: TObject);
     procedure mniEiClick(Sender: TObject);
     procedure mniEilandClick(Sender: TObject);
+    procedure mniKaartClick(Sender: TObject);
     procedure mniKleeClick(Sender: TObject);
     procedure mniLind1Click(Sender: TObject);
     procedure mniLind2Click(Sender: TObject);
@@ -689,6 +691,130 @@ var
     end; // with
   end;
 
+  procedure Teken_kaart;
+  var
+    j, k, n, p: Integer;
+    a, b, h, uu, u0, vc, vv, v0, v1: Double;
+    u, v, x, y: Array[1..8] of Double;
+
+    procedure projectie;
+    var
+      x, xv, y, yv, z, zv: Double;
+    begin
+      x := Cos(a) * Cos(b);
+      y := Sin(a) * Cos(b);
+      z := Sin(b);
+      xv := x * Cos(vv) - z * Sin(vv);
+      yv := y;
+      zv := x * Sin(vv) + z * Cos(vv);
+      b := ArcTan(zv / Sqrt(1 - zv * zv + 0.000001));
+      if xv > 0 then a := ArcTan(yv / xv);
+      if xv = 0 then a := Sign(yv) * pi / 2;
+      if xv < 0 then a := ArcTan(yv / xv) + pi * Sign(yv);
+    end;
+
+  begin
+    n := 256;
+    // defenitie van vierkant
+    h := 12; // halve hoogte
+    vc := 55;
+    vc := vc * pi / 180;
+    h := h * pi / 180; // centrum
+    x[1] := -h;
+    y[1] := -h;
+    u[1] := h;
+    v[1] := -h;
+    x[2] := -h;
+    y[2] := 0;
+    u[2] := h;
+    v[2] := 0;
+    x[3] := -h;
+    y[3] := h;
+    u[3] := h;
+    v[3] := h;
+    x[4] := -h;
+    y[4] := -h;
+    u[4] := -h;
+    v[4] := h;
+    x[5] := 0;
+    y[5] := -h;
+    u[5] := 0;
+    v[5] := h;
+    x[6] := h;
+    y[6] := -h;
+    u[6] := h;
+    v[6] := h;
+    x[7] := -h;
+    y[7] := -h;
+    u[7] := h;
+    v[7] := h;
+    x[8] := h;
+    y[8] := -h;
+    u[8] := -h;
+    v[8] := h;
+    // hoofdlus
+    p := rgFuncties.ItemIndex;
+    //for p := 0 to 4 do
+    //begin
+    for k := 1 to 8 do
+    begin
+      for j := 0 to n do
+      begin
+        a := ((n - j) * x[k] + j * u[k]) / n;
+        b := ((n - j) * y[k] + j * v[k]) / n;
+        case p of
+          0:
+            begin
+              vv := vc;
+              projectie;
+              uu := a;
+              v1 := b;
+              u0 := -1.8;
+              v0 := -0.6;
+            end;
+          1:
+            begin
+              vv := vc;
+              projectie;
+              uu := a;
+              v1 := Sin(b);
+              u0 := -0.6;
+              v0 := -0.6;
+            end;
+          2:
+            begin
+              vv := vc;
+              projectie;
+              uu := a;
+              v1 := Ln(Tan(pi / 4 + b  / 2));
+              u0 := 0.6;
+              v0 := -0.6;
+            end;
+          3:
+            begin
+              vv := vc;
+              projectie;
+              uu := a * Cos(b);
+              v1 := b;
+              u0 := 1.8;
+              v0 := -0.6;
+            end;
+          4:
+            begin
+              vv := 0;
+              projectie;
+              uu := a;
+              v1 := b;
+              u0 := 0;
+              v0 := 1;
+            end;
+        end; // case
+        pbMain.Canvas.Pixels[Round(xOff+xFac*(uu+u0)),Round(yOff+yFac*(v1+v0-vv))] := clYellow;
+      end; // for j
+    end; // for k
+    //end;
+  end;
+
 begin
   pbMain.Canvas.Clear;
   case prog of
@@ -950,6 +1076,10 @@ begin
         if k < 12 then pbMain.Canvas.Clear;
       end; // for k
     end; // 48
+  49:
+    begin
+      Teken_kaart;
+    end; // 49
   end; // case prog
 end;
 
@@ -2814,6 +2944,31 @@ begin
   rgFuncties.Items.Add('3 is mercatorprojectie');
   rgFuncties.Items.Add('4 is sanson-mercatorprojectie');
   rgFuncties.ItemIndex := 0;
+end;
+
+procedure TfrmMain.mniKaartClick(Sender: TObject);
+begin
+  Sender := Sender;
+  prog := 49;
+  pbClear;
+  Panel1.Visible := True;
+  GroupBox1.Visible := True;
+  rgFuncties.Visible := True;
+  rgFuncties.Caption := 'Gewenste projectie methode';
+  rgFuncties.Items.Clear;
+  frmMain.Caption := 'Computer simulaties: ' + mniKaart.Caption;
+  xFac := pbMain.Width / 5;
+  yFac := -pbMain.Height / 5;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  // invoer gewenste projectie methode
+  rgFuncties.Items.Add('1 is equidistante cylinderprojectie');
+  rgFuncties.Items.Add('2 is gewone cylinderprojectie');
+  rgFuncties.Items.Add('3 is mercatorprojectie');
+  rgFuncties.Items.Add('4 is sanson-mercatorprojectie');
+  rgFuncties.Items.Add('5 is raakvlakprojectie');
+  rgFuncties.ItemIndex := 0;
+  //pbMain.Canvas.EllipseC(xOff, yOff, 100, 100);
 end;
 
 procedure TfrmMain.mniKleeClick(Sender: TObject);
