@@ -14,6 +14,9 @@ type
 
   TfrmMain = class(TForm)
     btnTeken: TButton;
+    mniSonde: TMenuItem;
+    mniPlaneet: TMenuItem;
+    mniHoofdstuk12: TMenuItem;
     mniKaart: TMenuItem;
     mniEiland: TMenuItem;
     mniAarde: TMenuItem;
@@ -127,12 +130,14 @@ type
     procedure mniPatroon4Click(Sender: TObject);
     procedure mniPeanobClick(Sender: TObject);
     procedure mniPeanoClick(Sender: TObject);
+    procedure mniPlaneetClick(Sender: TObject);
     procedure mniPotveld1Click(Sender: TObject);
     procedure mniPotveld2Click(Sender: TObject);
     procedure mniPotveld3Click(Sender: TObject);
     procedure mniPotveld4Click(Sender: TObject);
     procedure mniPriemClick(Sender: TObject);
     procedure mniPythkleedClick(Sender: TObject);
+    procedure mniSondeClick(Sender: TObject);
     procedure mniTurtleaClick(Sender: TObject);
     procedure mniTurtleClick(Sender: TObject);
     procedure mniTurtledClick(Sender: TObject);
@@ -148,6 +153,7 @@ type
     procedure pbClear;
     procedure Cirkel(x,y: Integer; r:Double);
     procedure LindTeken;
+    procedure SondeTeken;
   public
 
   end;
@@ -254,6 +260,40 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TfrmMain.mniSondeClick(Sender: TObject);
+
+begin
+  Sender := Sender;
+  prog := 51;
+  pbClear;
+  Panel1.Visible := True;
+  GroupBox1.Visible := True;
+  lblParameter1.Visible := True;
+  lblParameter1.Caption := 'Afstand tot centrum en snelheid';
+  seParameter1.Visible := True;
+  seParameter1.Value := 80;
+  seParameter1.MaxValue := 200;
+  seParameter1.MinValue := 10;
+  seParameter1.Increment := 10;
+  lblParameter2.Visible := True;
+  lblParameter2.Caption := 'fase sonde';
+  seParameter2.Visible := True;
+  seParameter2.Value := 0.5;
+  seParameter2.MaxValue := 1;
+  seParameter2.MinValue := 0;
+  seParameter2.Increment := 0.1;
+  seParameter3.Visible := True;
+  seParameter3.Value := 13;
+  seParameter3.MaxValue := 25;
+  seParameter3.MinValue := 5;
+  seParameter3.Increment := 1;
+  frmMain.Caption := 'Computer simulaties: ' + mniSonde.Caption;
+  xFac := pbMain.Width / 800;
+  yFac := -pbMain.Height / 800;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
 end;
 
 procedure TfrmMain.mniTurtleaClick(Sender: TObject);
@@ -1103,6 +1143,11 @@ begin
     begin
       mniPatroon1Click(Sender);
     end;
+  51:
+    begin
+      pbMain.Canvas.Clear;
+      SondeTeken;
+    end;
   end;
 end;
 
@@ -1114,6 +1159,11 @@ begin
   5: mniLissa2Click(Sender);
   6: mniLissa3Click(Sender);
   7: mniLissafClick(Sender);
+  51:
+    begin
+      pbMain.Canvas.Clear;
+      SondeTeken;
+    end;
   end;
 end;
 
@@ -1122,6 +1172,11 @@ begin
   Sender := Sender;
   case prog of
   5: mniLissa2Click(Sender);
+  51:
+    begin
+      pbMain.Canvas.Clear;
+      SondeTeken;
+    end;
   end;
 end;
 
@@ -2289,6 +2344,46 @@ begin
   end;
 end;
 
+procedure TfrmMain.mniPlaneetClick(Sender: TObject);
+var
+  e, f, f0, r, x, y: Double;
+  j: Integer;
+begin
+  Sender := Sender;
+  prog := 50;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniPlaneet.Caption;
+  xFac := pbMain.Width / 20;
+  yFac := pbMain.Height / 20;
+  xOff := pbMain.Width div 2 + 120;
+  yOff := pbMain.Height div 2;
+
+  // positie zon
+  pbMain.Canvas.Line(Round(xOff+xFac*-0.2),yOff,Round(xOff+yFac*0.2),yOff);
+  pbMain.Canvas.Line(xOff,Round(yOff+yFac*-0.2),xOff,Round(yOff+yFac*0.2));
+
+  // baan van planeet
+  e := 0.86;
+  for j := 0 to 7 do
+  begin
+    f := 0;
+    f0 := j * pi / 4;
+    while f < 2 * pi do
+    begin
+      r := (1 + e) / (1 + e * Cos(f+f0));
+      x := r * Cos(f);
+      y := r * Sin(f);
+      if f = 0 then
+        pbMain.Canvas.MoveTo(Round(xOff+xFac*x),Round(yOff+yFac*y))
+      else
+        pbMain.Canvas.LineTo(Round(xOff+xFac*x),Round(yOff+yFac*y));
+      f := f + 0.01 * (1 + e) * Power(1 + e * Cos(f),2);
+    end; // while
+    e := 0.95 * e;
+    sleep(500);
+  end; // for j
+end;
+
 procedure TfrmMain.mniPotveld1Click(Sender: TObject);
 var
   h, r, phi: Double;
@@ -3157,6 +3252,47 @@ end;
 procedure TfrmMain.LindTeken;
 begin
 
+end;
+
+procedure TfrmMain.SondeTeken;
+const
+  a = 20;
+  c = 10000;
+  h = 0.004;
+var
+  b, r: Integer;
+  c1, c2, delu, delv, dist1, dist2, phi, u, u0, v, v0, x, x0, y, y0: Double;
+begin
+  r := seParameter1.Value;
+  phi := seParameter2.Value;
+  b := seParameter3.Value;
+  phi := 8 * phi * ArcTan(1);
+  x0 := r * Cos(phi);
+  y0 := r * Sin(phi);
+  u0 := -b * Sin(phi);
+  v0 := b * Cos(phi);
+  // initialisatie
+  x := x0;
+  y := y0;
+  u := u0;
+  v := v0;
+  // hoofdprogramma
+  pbMain.Canvas.EllipseC(Round(xOff+xFac*-a),yOff,2,2);
+  pbMain.Canvas.EllipseC(Round(xOff+xFac*a),yOff,2,2);
+  while (Abs(x) < 400) and (Abs(y) < 300) do
+  begin
+    dist1 := (x + a) * (x + a) + y * y;
+    dist2 := (x - a) * (x - a) + y * y;
+    c1 := c * Power(dist1, -1.5);
+    c2 := c * Power(dist2, -1.5);
+    delu := -c1 * (x + a) - c2 * (x - a);
+    delv := -c1 * y - c2 * y;
+    x := x + h * u;
+    y := y + h * v;
+    u := u + h * delu;
+    v := v + h * delv;
+    pbMain.Canvas.Pixels[Round(xOff+xFac*x),Round(yOff+yFac*y)] := clYellow;
+  end; // while
 end;
 
 end.

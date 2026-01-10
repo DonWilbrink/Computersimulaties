@@ -350,6 +350,17 @@ object frmMain: TfrmMain
           OnClick = mniKaartClick
         end
       end
+      object mniHoofdstuk12: TMenuItem
+        Caption = 'Hoofdstuk 12'
+        object mniPlaneet: TMenuItem
+          Caption = 'Baan van een planeet om de zon'
+          OnClick = mniPlaneetClick
+        end
+        object mniSonde: TMenuItem
+          Caption = 'Sonde'
+          OnClick = mniSondeClick
+        end
+      end
     end
   end
 end
