@@ -14,6 +14,7 @@ type
 
   TfrmMain = class(TForm)
     btnTeken: TButton;
+    mniStarship: TMenuItem;
     mniSonde: TMenuItem;
     mniPlaneet: TMenuItem;
     mniHoofdstuk12: TMenuItem;
@@ -138,6 +139,7 @@ type
     procedure mniPriemClick(Sender: TObject);
     procedure mniPythkleedClick(Sender: TObject);
     procedure mniSondeClick(Sender: TObject);
+    procedure mniStarshipClick(Sender: TObject);
     procedure mniTurtleaClick(Sender: TObject);
     procedure mniTurtleClick(Sender: TObject);
     procedure mniTurtledClick(Sender: TObject);
@@ -154,6 +156,7 @@ type
     procedure Cirkel(x,y: Integer; r:Double);
     procedure LindTeken;
     procedure SondeTeken;
+    procedure TekenStarship;
   public
 
   end;
@@ -294,6 +297,40 @@ begin
   yFac := -pbMain.Height / 800;
   xOff := pbMain.Width div 2;
   yOff := pbMain.Height div 2;
+end;
+
+procedure TfrmMain.mniStarshipClick(Sender: TObject);
+begin
+  Sender := Sender;
+  prog := 52;
+  pbClear;
+  {Panel1.Visible := True;
+  GroupBox1.Visible := True;
+  lblParameter1.Visible := True;
+  lblParameter1.Caption := 'Beginpositie';
+  seParameter1.Visible := True;
+  seParameter1.Value := 80;
+  seParameter1.MaxValue := 200;
+  seParameter1.MinValue := 10;
+  seParameter1.Increment := 10;
+  lblParameter2.Visible := True;
+  lblParameter2.Caption := 'fase sonde';
+  seParameter2.Visible := True;
+  seParameter2.Value := 0.5;
+  seParameter2.MaxValue := 1;
+  seParameter2.MinValue := 0;
+  seParameter2.Increment := 0.1;
+  seParameter3.Visible := True;
+  seParameter3.Value := 13;
+  seParameter3.MaxValue := 25;
+  seParameter3.MinValue := 5;
+  seParameter3.Increment := 1;}
+  frmMain.Caption := 'Computer simulaties: ' + mniStarship.Caption;
+  xFac := pbMain.Width / 16;
+  yFac := -pbMain.Height / 16;
+  xOff := pbMain.Width div 2 - 150;
+  yOff := pbMain.Height div 2;
+  TekenStarship;
 end;
 
 procedure TfrmMain.mniTurtleaClick(Sender: TObject);
@@ -3292,6 +3329,76 @@ begin
     u := u + h * delu;
     v := v + h * delv;
     pbMain.Canvas.Pixels[Round(xOff+xFac*x),Round(yOff+yFac*y)] := clYellow;
+  end; // while
+end;
+
+procedure TfrmMain.TekenStarship;
+var
+  absvel, c, c1, c2, e, h, h1, h2, phi, phi0, psi, r, r0, u, u0, v, v0, x, x0,
+    x1, x2, x1v, x2v, y, y0, y1, y2, y1v, y2v, dist1, dist2, delu, delv, xv, yv: Double;
+begin
+  // exentriciteit, positie 1e ster
+  e := 0.4;
+  x1 := 1 / (1 + e);
+  y1 := 0;
+  x2 := -x1;
+  y2 := 0;
+  // beginpositie, snelheid van sonde
+  r0 := 3;
+  phi0 := 0.001;
+  absvel := 0.1;
+  psi := 0;
+  x0 := r0 * Cos(phi0);
+  y0 := r0 * Sin(phi0);
+  u0 := -absvel * Cos(psi);
+  v0 := -absvel * Sin(psi);
+  // gravitatie constante, tijdstap
+  c := 0.5;
+  h := 0.002;
+  h1 := h * c;
+  h2 := 4 * h * c * c;
+  // initialisatie
+  x := x0;
+  y := y0;
+  u := u0;
+  v := v0;
+  phi := 0;
+  // hoofdprogramma
+  while abs(x) + abs(y) < 16 do
+  begin
+    x1v := x1;
+    y1v := y1;
+    x2v := x2;
+    y2v := y2;
+    xv := x;
+    yv := y;
+    r := 1 / (1 + e * Cos(phi));
+    // t := t + h;
+    phi := phi + h1 / (r * r);
+    x1 := r * Cos(phi);
+    y1 := r * Sin(phi);
+    x2 := -x1;
+    y2 := -y1;
+    dist1 := Sqrt((x - x1) * (x - x1) + (y - y1) * (y - y1));
+    dist2 := Sqrt((x - x2) * (x - x2) + (y - y2) * (y - y2));
+    c1 := h2 / (dist1 * dist1 * dist1);
+    c2 := h2 / (dist2 * dist2 * dist2);
+    delu := -c1 * (x - x1) - c2 * (x - x2);
+    delv := -c1 * (y - y1) - c2 * (y - y2);
+    x := x + h * u;
+    y := y + h * v;
+    u := u + delu;
+    v := v + delv;
+    with pbMain.Canvas do
+    begin
+      Pen.Color := clBlack;
+      EllipseC(Round(xOff+xFac*x1v),Round(yOff+yFac*y1v),4,4);
+      EllipseC(Round(xOff+xFac*x2v),Round(yOff+yFac*y2v),4,4);
+      Pen.Color := clYellow;
+      EllipseC(Round(xOff+xFac*x1),Round(yOff+yFac*y1),4,4);
+      EllipseC(Round(xOff+xFac*x2),Round(yOff+yFac*y2),4,4);
+      EllipseC(Round(xOff+xFac*x),Round(yOff+yFac*y),1,1);
+    end; // with
   end; // while
 end;
 

@@ -360,6 +360,10 @@ object frmMain: TfrmMain
           Caption = 'Sonde'
           OnClick = mniSondeClick
         end
+        object mniStarship: TMenuItem
+          Caption = 'Starship'
+          OnClick = mniStarshipClick
+        end
       end
     end
   end
