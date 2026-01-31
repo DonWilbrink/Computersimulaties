@@ -14,6 +14,8 @@ type
 
   TfrmMain = class(TForm)
     btnTeken: TButton;
+    mniKomeet: TMenuItem;
+    mniHoofdstuk13: TMenuItem;
     mniStarship: TMenuItem;
     mniSonde: TMenuItem;
     mniPlaneet: TMenuItem;
@@ -104,6 +106,7 @@ type
     procedure mniEilandClick(Sender: TObject);
     procedure mniKaartClick(Sender: TObject);
     procedure mniKleeClick(Sender: TObject);
+    procedure mniKomeetClick(Sender: TObject);
     procedure mniLind1Click(Sender: TObject);
     procedure mniLind2Click(Sender: TObject);
     procedure mniMoireS2Click(Sender: TObject);
@@ -157,6 +160,7 @@ type
     procedure LindTeken;
     procedure SondeTeken;
     procedure TekenStarship;
+    procedure TekenKomeet;
   public
 
   end;
@@ -3178,6 +3182,19 @@ begin
   end; // for k
 end;
 
+procedure TfrmMain.mniKomeetClick(Sender: TObject);
+begin
+  Sender := Sender;
+  prog := 52;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniKomeet.Caption;
+  xFac := pbMain.Width / 80;
+  yFac := -pbMain.Height / 60;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  TekenKomeet;
+end;
+
 procedure TfrmMain.mniLind1Click(Sender: TObject);
 
 begin
@@ -3400,6 +3417,46 @@ begin
       EllipseC(Round(xOff+xFac*x),Round(yOff+yFac*y),1,1);
     end; // with
   end; // while
+end;
+
+procedure TfrmMain.TekenKomeet;
+var
+  i: Integer;
+  e, f, f0, h, rr, s, t, x, y: Double;
+  Col: TColor;
+  r: Array [1..8] of Double = (0.4,0.7,1,1.5,5.2,9.5,19,30);
+  bl: Boolean;
+begin
+  s := 10;
+  h := 0.00015 * s;
+  pbMain.Canvas.Brush.Style := bsClear;
+  for i := 1 to 8 do
+  begin
+    if i = 3 then Col := clAqua else Col := clWhite;
+    pbMain.Canvas.Pen.Color := Col;
+    t := s * r[i];
+    pbMain.Canvas.EllipseC(xOff,yOff,Round(t),Round(t));
+  end; // for
+  i := 1;
+  Screen.Cursor := crHourGlass;
+  while i < 10 do
+  begin
+    e := 1 - Random / (10 * Power(s,0.3));
+    f := 0;
+    f0 := 2 * Pi * Random;
+    while f < 2 * Pi do
+    begin
+      rr := s * 50 * (1 - e) / (1 - e * Cos(f));
+      x := rr * Cos(f0 + f);
+      y := rr * Sin(f0 + f);
+      bl := (Abs(Round(xOff+xFac*x)) < pbMain.Width) and (Abs(Round(yOff+yFac*y)) < pbMain.Height);
+      if bl = True then pbMain.Canvas.Pixels[Round(xOff+xFac*x),Round(yOff+yFac*y)] := clYellow;
+      if (bl = False) and (f > Pi) then Break;
+      f := f + h / (rr * rr);
+    end;
+    Inc(i);
+  end; // while i
+  Screen.Cursor := crDefault;
 end;
 
 end.

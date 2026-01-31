@@ -365,6 +365,13 @@ object frmMain: TfrmMain
           OnClick = mniStarshipClick
         end
       end
+      object mniHoofdstuk13: TMenuItem
+        Caption = 'Hoofdstuk 13'
+        object mniKomeet: TMenuItem
+          Caption = 'Kometen om de zon'
+          OnClick = mniKomeetClick
+        end
+      end
     end
   end
 end
