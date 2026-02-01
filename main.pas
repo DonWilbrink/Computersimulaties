@@ -1189,6 +1189,13 @@ begin
       pbMain.Canvas.Clear;
       SondeTeken;
     end;
+  53:
+    begin
+      pbMain.Canvas.Clear;
+      pbMain.Canvas.Brush.Color := clBlack;
+      pbMain.Canvas.FillRect(0,0,pbMain.Width,pbMain.Height);
+      TekenKomeet;
+    end;
   end;
 end;
 
@@ -3185,13 +3192,22 @@ end;
 procedure TfrmMain.mniKomeetClick(Sender: TObject);
 begin
   Sender := Sender;
-  prog := 52;
+  prog := 53;
   pbClear;
   frmMain.Caption := 'Computer simulaties: ' + mniKomeet.Caption;
   xFac := pbMain.Width / 80;
   yFac := -pbMain.Height / 60;
   xOff := pbMain.Width div 2;
   yOff := pbMain.Height div 2;
+  Panel1.Visible := True;
+  GroupBox1.Visible := True;
+  lblParameter1.Visible := True;
+  lblParameter1.Caption := 'Schaalfactor';
+  seParameter1.Visible := True;
+  seParameter1.Value := 1;
+  seParameter1.MaxValue := 15;
+  seParameter1.MinValue := 1;
+  seParameter1.Increment := 1;
   TekenKomeet;
 end;
 
@@ -3427,7 +3443,7 @@ var
   r: Array [1..8] of Double = (0.4,0.7,1,1.5,5.2,9.5,19,30);
   bl: Boolean;
 begin
-  s := 10;
+  s := seParameter1.Value;
   h := 0.00015 * s;
   pbMain.Canvas.Brush.Style := bsClear;
   for i := 1 to 8 do
@@ -3439,7 +3455,7 @@ begin
   end; // for
   i := 1;
   Screen.Cursor := crHourGlass;
-  while i < 10 do
+  while i <= 10 do
   begin
     e := 1 - Random / (10 * Power(s,0.3));
     f := 0;
