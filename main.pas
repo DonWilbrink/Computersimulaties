@@ -14,6 +14,7 @@ type
 
   TfrmMain = class(TForm)
     btnTeken: TButton;
+    mniPlaneet1: TMenuItem;
     mniKomeet: TMenuItem;
     mniHoofdstuk13: TMenuItem;
     mniStarship: TMenuItem;
@@ -134,6 +135,7 @@ type
     procedure mniPatroon4Click(Sender: TObject);
     procedure mniPeanobClick(Sender: TObject);
     procedure mniPeanoClick(Sender: TObject);
+    procedure mniPlaneet1Click(Sender: TObject);
     procedure mniPlaneetClick(Sender: TObject);
     procedure mniPotveld1Click(Sender: TObject);
     procedure mniPotveld2Click(Sender: TObject);
@@ -161,6 +163,7 @@ type
     procedure SondeTeken;
     procedure TekenStarship;
     procedure TekenKomeet;
+    procedure TekenPlaneet1;
   public
 
   end;
@@ -1196,6 +1199,13 @@ begin
       pbMain.Canvas.FillRect(0,0,pbMain.Width,pbMain.Height);
       TekenKomeet;
     end;
+  54:
+    begin
+      pbMain.Canvas.Clear;
+      pbMain.Canvas.Brush.Color := clBlack;
+      pbMain.Canvas.FillRect(0,0,pbMain.Width,pbMain.Height);
+      TekenPlaneet1;
+    end;
   end;
 end;
 
@@ -1224,6 +1234,13 @@ begin
     begin
       pbMain.Canvas.Clear;
       SondeTeken;
+    end;
+  54:
+    begin
+      pbMain.Canvas.Clear;
+      pbMain.Canvas.Brush.Color := clBlack;
+      pbMain.Canvas.FillRect(0,0,pbMain.Width,pbMain.Height);
+      TekenPlaneet1;
     end;
   end;
 end;
@@ -2392,6 +2409,33 @@ begin
   end;
 end;
 
+procedure TfrmMain.mniPlaneet1Click(Sender: TObject);
+begin
+  Sender := Sender;
+  prog := 54;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniPlaneet1.Caption;
+  xFac := pbMain.Width / 100;
+  yFac := pbMain.Height / 100;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  Panel1.Visible := True;
+  GroupBox1.Visible := True;
+  lblParameter1.Visible := True;
+  seParameter1.Visible := True;
+  seParameter3.Visible := True;
+  lblParameter1.Caption := 'Schaalfactor en aantal jaren';
+  seParameter1.Value := 1;
+  seParameter1.MinValue := 1;
+  seParameter1.MaxValue := 20;
+  seParameter1.Increment := 1;
+  seParameter3.Value := 1;
+  seParameter3.MinValue := 1;
+  seParameter3.MaxValue := 5;
+  seParameter3.Increment := 1;
+  TekenPlaneet1;
+end;
+
 procedure TfrmMain.mniPlaneetClick(Sender: TObject);
 var
   e, f, f0, r, x, y: Double;
@@ -3473,6 +3517,55 @@ begin
     Inc(i);
   end; // while i
   Screen.Cursor := crDefault;
+end;
+
+procedure TfrmMain.TekenPlaneet1;
+var
+  a, i, j, ss: Integer;
+  ff, h, t, rc: Double;
+  col: Array[0..8] of Integer = (0,11,10,15,12,13,9,3,2);
+  r: Array[1..8] of Double = (0.387,0.723,1,1.524,5.2,9.54,19.18,30.06);
+  f, s, x, xv, y, yv: Array[1..8] of Double;
+begin
+  Application.ProcessMessages;
+  ss := seParameter1.Value; // schaalfactor
+  a := seParameter3.Value; // aantal jaren
+  rc := 0.5;
+  for i := 1 to 8 do
+  begin
+    s[i] := Power(r[i],-1.5);
+    f[i] := 2 * Pi * Random;
+    xv[i] := 0;
+    yv[i] := 0;
+  end;
+  h := 0.0001;
+  t := 0;
+  while t < 2 * Pi * a do
+  begin
+    pbMain.Canvas.Brush.Style := bsSolid;
+    pbMain.Canvas.Brush.Color := EgaColor[14];
+    pbMain.Canvas.EllipseC(xOff,yOff,Round(ss*xFac*rc),Round(ss*yFac*rc));
+    //pbMain.Canvas.Brush.Style := bsClear;
+    for j := 1 to 8 do
+    begin
+      ff := f[j] + s[j] * t;
+      x[j] := ss * r[j] * Cos(ff);
+      y[j] := ss * r[j] * Sin(ff);
+      if t > 0 then
+      begin
+        pbMain.Canvas.Brush.Color := EgaColor[0];
+        pbMain.Canvas.Pen.Color := EgaColor[0];
+        pbMain.Canvas.EllipseC(Round(xOff+ss*xFac*xv[j]),Round(yOff+ss*yFac*yv[j]),
+          Round(ss*xFac*rc),Round(ss*yFac*rc));
+      end;
+      pbMain.Canvas.Brush.Color := EgaColor[Col[j]];
+      pbMain.Canvas.EllipseC(Round(xOff+ss*xFac*x[j]),Round(yOff+ss*yFac*y[j]),
+        Round(ss*xFac*rc),Round(ss*yFac*rc));
+      xv[j] := x[j];
+      yv[j] := y[j];
+      t := t + h;
+    end;
+  end;
 end;
 
 end.

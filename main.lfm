@@ -371,6 +371,10 @@ object frmMain: TfrmMain
           Caption = 'Kometen om de zon'
           OnClick = mniKomeetClick
         end
+        object mniPlaneet1: TMenuItem
+          Caption = 'Zonnestelsel, zon met acht planeten op schaal'
+          OnClick = mniPlaneet1Click
+        end
       end
     end
   end
