@@ -14,6 +14,7 @@ type
 
   TfrmMain = class(TForm)
     btnTeken: TButton;
+    mniPlaneet2: TMenuItem;
     mniPlaneet1: TMenuItem;
     mniKomeet: TMenuItem;
     mniHoofdstuk13: TMenuItem;
@@ -136,6 +137,7 @@ type
     procedure mniPeanobClick(Sender: TObject);
     procedure mniPeanoClick(Sender: TObject);
     procedure mniPlaneet1Click(Sender: TObject);
+    procedure mniPlaneet2Click(Sender: TObject);
     procedure mniPlaneetClick(Sender: TObject);
     procedure mniPotveld1Click(Sender: TObject);
     procedure mniPotveld2Click(Sender: TObject);
@@ -159,11 +161,11 @@ type
   private
     procedure pbClear;
     procedure Cirkel(x,y: Integer; r:Double);
-    procedure LindTeken;
     procedure SondeTeken;
     procedure TekenStarship;
     procedure TekenKomeet;
     procedure TekenPlaneet1;
+    procedure TekenPlaneet2;
   public
 
   end;
@@ -2436,6 +2438,19 @@ begin
   TekenPlaneet1;
 end;
 
+procedure TfrmMain.mniPlaneet2Click(Sender: TObject);
+begin
+  Sender := Sender;
+  prog := 55;
+  pbClear;
+  frmMain.Caption := 'Computer simulaties: ' + mniPlaneet1.Caption;
+  xFac := pbMain.Width / 12;
+  yFac := pbMain.Height / 12;
+  xOff := pbMain.Width div 2;
+  yOff := pbMain.Height div 2;
+  TekenPlaneet2;
+end;
+
 procedure TfrmMain.mniPlaneetClick(Sender: TObject);
 var
   e, f, f0, r, x, y: Double;
@@ -3363,11 +3378,6 @@ begin
   end;
 end;
 
-procedure TfrmMain.LindTeken;
-begin
-
-end;
-
 procedure TfrmMain.SondeTeken;
 const
   a = 20;
@@ -3540,6 +3550,7 @@ begin
   end;
   h := 0.0001;
   t := 0;
+  Screen.Cursor := crHourGlass;
   while t < 2 * Pi * a do
   begin
     pbMain.Canvas.Brush.Style := bsSolid;
@@ -3566,6 +3577,58 @@ begin
       t := t + h;
     end;
   end;
+  Screen.Cursor := crDefault;
+end;
+
+procedure TfrmMain.TekenPlaneet2;
+var
+  c, h, phi, s, r, r1, r2, r3, t, u, v, x, x1, xv, x1v, y, y1, yv, y1v, z1: Double;
+begin
+  Application.ProcessMessages;
+  // straal en inclinatie van planeet
+  r := 1.5;
+  phi := 0.3;
+  r1 := r * Cos(phi);
+  r2 := r;
+  r3 := r * Sin(phi);
+  h := 0.00005;
+  c := Power(r,-1.5);
+  t := 0;
+  with pbMain.Canvas do
+  begin
+    Brush.Color := EgaColor[15];
+    Brush.Style := bsSolid;
+    EllipseC(Xoff,Yoff,Round(xFac * 0.1),Round(yFac * 0.1));   // zon
+    Brush.Color := EgaColor[0];
+    Brush.Style := bsClear;
+    Screen.Cursor := crHourGlass;
+    while t < 50 do
+    begin
+      x := Cos(t);
+      y := Sin(t);
+      x1 := r1 * Cos(c*t);
+      y1 := r2 * Sin(c*t);
+      z1 := -r3 * Cos(c*t);
+      xv := Cos(t-h);
+      yv := Sin(t-h);
+      x1v := r1 * Cos(c*(t-h));
+      y1v := r2 * Sin(c*(t-h));
+      Pen.Color := EgaColor[0];
+      EllipseC(Round(xOff+xFac*xv),Round(yOff+yFac*yv),Round(xFac*0.08),Round(yFac*0.08));
+      Pen.Color := EgaColor[14];
+      Ellipsec(Round(xOff+xFac*x),Round(yOff+yFac*y),Round(xFac*0.06),Round(yFac*0.06)); // aarde
+      Pen.Color := EgaColor[0];
+      EllipseC(Round(xOff+xFac*x1v),Round(yOff+yFac*y1v),Round(xFac*0.08),Round(yFac*0.08));
+      Pen.Color := EgaColor[12];
+      EllipseC(Round(xOff+xFac*x1),Round(yOff+yFac*y1),Round(xFac*0.06),Round(yFac*0.06));
+      s := Sqrt((x-x1) * (x-x1) + (y-y1) * (y-y1) + z1 * z1);
+      u := 3 * (x1-x) / s;
+      v := 3 + z1 /  s;
+      Pixels[Round(xOff+xFac*u),Round(yOff+yFac*v)] := EgaColor[15];
+      t := t + h;
+    end; // while
+    Screen.Cursor := crDefault;
+  end; // with
 end;
 
 end.

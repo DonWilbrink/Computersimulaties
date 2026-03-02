@@ -7,9 +7,10 @@ object frmMain: TfrmMain
   ClientHeight = 696
   ClientWidth = 958
   DesignTimePPI = 120
+  Font.Height = -15
   KeyPreview = True
   Menu = Hoofdminu
-  LCLVersion = '4.4.0.0'
+  LCLVersion = '4.6.0.0'
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnKeyPress = FormKeyPress
@@ -374,6 +375,10 @@ object frmMain: TfrmMain
         object mniPlaneet1: TMenuItem
           Caption = 'Zonnestelsel, zon met acht planeten op schaal'
           OnClick = mniPlaneet1Click
+        end
+        object mniPlaneet2: TMenuItem
+          Caption = 'Schijnbare planetenbeweging aarde met een planeet'
+          OnClick = mniPlaneet2Click
         end
       end
     end
